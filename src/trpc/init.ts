@@ -1,8 +1,7 @@
 import { cache } from "react";
 import superjson from "superjson";
-import { headers, cookies } from "next/headers";
 
-import { initTRPC, TRPCError } from "@trpc/server"
+import { initTRPC } from "@trpc/server"
 import { db } from "@/db";
 
 export const createTRPCContext = cache(async () => {

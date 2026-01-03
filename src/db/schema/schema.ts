@@ -7,12 +7,10 @@ import {
     varchar,
     text,
     timestamp,
-    numeric,
     decimal,
     boolean,
     integer,
     jsonb,
-    serial,
     pgEnum
 } from "drizzle-orm/pg-core";
 

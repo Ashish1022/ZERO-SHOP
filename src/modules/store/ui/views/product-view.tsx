@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 
 export const ProductView = ({ slug }: { slug: string }) => {
   const [quantity, setQuantity] = useState(1);
+  // @typescript-eslint/no-unused-vars   
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   const trpc = useTRPC();
@@ -65,7 +66,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                   <span className="text-xs text-muted-foreground uppercase tracking-wider">
                     Size
                   </span>
-                  <p className="font-semibold mt-1">3" x 3"</p>
+                  <p className="font-semibold mt-1">3&quot; x 3&quot;</p>
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground uppercase tracking-wider">

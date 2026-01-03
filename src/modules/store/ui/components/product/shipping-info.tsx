@@ -39,7 +39,7 @@ export const ShippingInfo = () => {
             Shipping & Returns
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mt-2">
-            We've Got You Covered
+            We&apos;ve Got You Covered
           </h2>
         </div>
 

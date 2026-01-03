@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { categories, media, productImages, products } from "@/db/schema";
+import { categories, media, productImages, products } from "@/db/schema/schema";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, isNull, ne, sql } from "drizzle-orm";

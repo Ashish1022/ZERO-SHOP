@@ -124,7 +124,7 @@ export const CustomerReviews = ({ productId }: CustomerReviewsProps) => {
                 
                 {review.comment && (
                   <p className="text-sm text-muted-foreground mb-4 leading-relaxed line-clamp-4">
-                    "{review.comment}"
+                    &quot;{review.comment}&quot;
                   </p>
                 )}
                 
