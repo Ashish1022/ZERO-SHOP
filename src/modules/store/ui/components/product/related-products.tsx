@@ -40,7 +40,7 @@ export const RelatedProducts = ({ productId, categoryId }: RelatedProductsProps)
             </h2>
           </div>
           <Link href="/#shop">
-            <Button variant="outline" size="lg" className="cursor-target">
+            <Button variant="outline" size="lg">
               View All
             </Button>
           </Link>
@@ -51,7 +51,7 @@ export const RelatedProducts = ({ productId, categoryId }: RelatedProductsProps)
             <Link
               key={product.id}
               href={`/products/${product.slug}`}
-              className="group relative bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-target"
+              className="group relative bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
             >
               {product.badge && (
                 <div className="absolute top-3 left-3 z-10">

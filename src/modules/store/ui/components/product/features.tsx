@@ -19,7 +19,7 @@ export const ProductFeatures = () => {
       {features.map((feature) => (
         <div
           key={feature.text}
-          className="flex items-center gap-3 p-3 bg-secondary rounded-lg cursor-target"
+          className="flex items-center gap-3 p-3 bg-secondary rounded-lg"
         >
           <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center">
             <feature.icon className="h-4 w-4 text-foreground" />

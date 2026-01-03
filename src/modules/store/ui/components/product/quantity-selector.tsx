@@ -34,7 +34,7 @@ const QuantitySelector = ({
         size="icon"
         onClick={decrease}
         disabled={quantity <= min}
-        className="h-10 w-10 rounded-lg cursor-target"
+        className="h-10 w-10 rounded-lg"
       >
         <Minus className="h-4 w-4" />
       </Button>
@@ -46,7 +46,7 @@ const QuantitySelector = ({
         size="icon"
         onClick={increase}
         disabled={quantity >= max}
-        className="h-10 w-10 rounded-lg cursor-target"
+        className="h-10 w-10 rounded-lg"
       >
         <Plus className="h-4 w-4" />
       </Button>

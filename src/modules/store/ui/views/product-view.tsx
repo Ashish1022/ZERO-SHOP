@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 
 export const ProductView = ({ slug }: { slug: string }) => {
   const [quantity, setQuantity] = useState(1);
-  // @typescript-eslint/no-unused-vars   
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   const trpc = useTRPC();
@@ -27,11 +26,11 @@ export const ProductView = ({ slug }: { slug: string }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="pt-20">
+      <div className="pt-20">
         <div className="container mx-auto px-4 py-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-target"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Shop
@@ -46,7 +45,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                   {product.category?.name}
                 </span>
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2 cursor-target">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
                   {product.name}
                 </h1>
               </div>
@@ -58,7 +57,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                   per sticker
                 </span>
               </div>
-              <p className="text-muted-foreground leading-relaxed cursor-target">
+              <p className="text-muted-foreground leading-relaxed">
                 {product.description}
               </p>
               <div className="flex gap-6 py-4 border-y border-border">
@@ -97,7 +96,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                   <Button
                     variant="brand"
                     size="xl"
-                    className="flex-1 group cursor-target"
+                    className="flex-1 group"
                     // onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform" />
@@ -107,7 +106,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                   <Button
                     variant="outline"
                     size="xl"
-                    className={`px-4 cursor-target ${
+                    className={`px-4 ${
                       isWishlisted ? "text-brand border-brand" : ""
                     }`}
                     // onClick={handleWishlist}
@@ -119,7 +118,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                   <Button
                     variant="outline"
                     size="xl"
-                    className="px-4 cursor-target"
+                    className="px-4"
                     // onClick={handleShare}
                   >
                     <Share2 className="h-5 w-5" />
@@ -135,7 +134,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
         <CustomerReviews productId={product.id} />
 
         <RelatedProducts productId={product.id} categoryId={product.categoryId} />
-      </main>
+      </div>
     </div>
   );
 };

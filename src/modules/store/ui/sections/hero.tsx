@@ -4,8 +4,10 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export const HeroSection = () => {
+  const router = useRouter();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface-dark text-surface-dark-foreground">
       <div className="absolute inset-0">
@@ -56,7 +58,12 @@ export const HeroSection = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up"
             style={{ animationDelay: "0.4s" }}
           >
-            <Button variant="hero" size="xl" className="group">
+            <Button
+              variant="hero"
+              size="xl"
+              className="group bg-black"
+              onClick={() => router.push("/categories")}
+            >
               Shop Collection
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>

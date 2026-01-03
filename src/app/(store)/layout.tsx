@@ -2,7 +2,6 @@ import { Space_Grotesk } from "next/font/google";
 
 import { Navbar } from "@/modules/store/ui/layout/navbar";
 import { Footer } from "@/modules/store/ui/layout/footer";
-import TargetCursor from "@/components/target-cursor";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -13,11 +12,6 @@ const spaceGrotesk = Space_Grotesk({
 const StoreLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={`${spaceGrotesk.className} min-h-screen`}>
-      <TargetCursor
-        spinDuration={2}
-        hideDefaultCursor={true}
-        parallaxOn={true}
-      />
       <Navbar />
       <main>{children}</main>
       <Footer />

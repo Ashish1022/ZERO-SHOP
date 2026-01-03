@@ -2,6 +2,7 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const stickers = [
   {
@@ -61,8 +62,8 @@ export const FeaturedStickers = () => {
               Best Sellers
             </h2>
           </div>
-          <Button variant="outline" size="lg">
-            View All Stickers
+          <Button variant="outline" size="lg" asChild>
+            <Link href={"/products"}>View All Stickers</Link>
           </Button>
         </div>
 
