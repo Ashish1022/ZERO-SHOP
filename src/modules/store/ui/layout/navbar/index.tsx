@@ -10,8 +10,8 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Shop", href: "#shop" },
-    { name: "Collections", href: "#collections" },
+    { name: "Shop", href: "/products" },
+    { name: "Collections", href: "/categories" },
     { name: "Custom", href: "#custom" },
     { name: "About", href: "#about" },
   ];
