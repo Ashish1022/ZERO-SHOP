@@ -14,8 +14,11 @@ import { RelatedProducts } from "../components/product/related-products";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import useCart from "@/hooks/use-cart";
+import toast from "react-hot-toast";
 
 export const ProductView = ({ slug }: { slug: string }) => {
+  const cart = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -23,6 +26,49 @@ export const ProductView = ({ slug }: { slug: string }) => {
   const { data: product } = useSuspenseQuery(
     trpc.products.getOne.queryOptions({ slug: slug })
   );
+
+  const handleAddToCart = () => {
+    cart.addItem(
+      {
+        productId: product.id.toString(),
+        name: product.name,
+        price: product.price,
+        image: product.images[0].url || "",
+        category: product.category?.name || "Uncategorized",
+        slug: product.slug,
+      },
+      quantity
+    );
+    toast.success(`${quantity}x ${product.name} added to your cart.`);
+  };
+
+  const handleWishlist = () => {
+    setIsWishlisted(!isWishlisted);
+    if (isWishlisted) {
+      toast.success(`${product.name} removed from your wishlist.`);
+    } else {
+      toast.success(`${product.name} saved to your wishlist.`);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.name,
+          text: product.description,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Product link copied to clipboard.");
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name !== "AbortError") {
+        toast.error("Failed to share product.");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,7 +143,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                     variant="brand"
                     size="xl"
                     className="flex-1 group"
-                    // onClick={handleAddToCart}
+                    onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform" />
                     Add to Cart — $
@@ -109,7 +155,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                     className={`px-4 ${
                       isWishlisted ? "text-brand border-brand" : ""
                     }`}
-                    // onClick={handleWishlist}
+                    onClick={handleWishlist}
                   >
                     <Heart
                       className={`h-5 w-5 ${isWishlisted ? "fill-brand" : ""}`}
@@ -119,7 +165,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                     variant="outline"
                     size="xl"
                     className="px-4"
-                    // onClick={handleShare}
+                    onClick={handleShare}
                   >
                     <Share2 className="h-5 w-5" />
                   </Button>
@@ -133,7 +179,10 @@ export const ProductView = ({ slug }: { slug: string }) => {
 
         <CustomerReviews productId={product.id} />
 
-        <RelatedProducts productId={product.id} categoryId={product.categoryId} />
+        <RelatedProducts
+          productId={product.id}
+          categoryId={product.categoryId}
+        />
       </div>
     </div>
   );

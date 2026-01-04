@@ -31,10 +31,13 @@ import {
   sortedValues,
 } from "@/modules/products/hooks/use-product-filters";
 import { Skeleton } from "@/components/ui/skeleton";
+import useCart from "@/hooks/use-cart";
+import toast from "react-hot-toast";
 
 export const ProductsView = () => {
   const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
+  const cart = useCart();
   const [filters, setFilters] = useProductFilters();
 
   const trpc = useTRPC();
@@ -86,6 +89,25 @@ export const ProductsView = () => {
     };
     return labels[value] || "Sort by";
   };
+
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent, product: any) => {
+      e.stopPropagation();
+
+      cart.addItem(
+        {
+          productId: product.id.toString(),
+          name: product.name,
+          price: product.price,
+          image: product.primaryImage?.url || "",
+          category: product.category?.name || "Uncategorized",
+          slug: product.slug
+        },
+        1
+      );
+    },
+    [cart]
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -284,7 +306,11 @@ export const ProductsView = () => {
                                 </>
                               )}
                           </div>
-                          <Button size="sm" className="gap-2" onClick={(e)=>e.stopPropagation()}>
+                          <Button
+                            size="sm"
+                            className="gap-2"
+                            onClick={(e) => handleAddToCart(e, product)}
+                          >
                             <ShoppingCart className="h-4 w-4" />
                             Add to Bag
                           </Button>
