@@ -11,14 +11,14 @@ import useCart from "@/hooks/use-cart";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false); 
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const cart = useCart();
 
   const navLinks = [
     { name: "Shop", href: "/products" },
     { name: "Collections", href: "/categories" },
-    { name: "Custom", href: "#custom" },
+    { name: "Custom Studio", href: "/custom-sticker-studio" },
     { name: "About", href: "#about" },
   ];
 
