@@ -127,21 +127,9 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                   <Tag className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-primary mb-2">
-                      You're ${remainingForFreeShipping.toFixed(2)} away from
-                      FREE shipping! 🎉
+                      You're ₹{remainingForFreeShipping.toFixed(2)} away from
+                      FREE shipping!
                     </p>
-                    <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
-                      <div
-                        className="h-full bg-linear-to-r from-primary to-primary/80 transition-all duration-500 ease-out"
-                        style={{
-                          width: `${Math.min(
-                            (subtotal / CART_CONFIG.FREE_SHIPPING_THRESHOLD) *
-                              100,
-                            100
-                          )}%`,
-                        }}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
