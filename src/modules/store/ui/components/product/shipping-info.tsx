@@ -11,7 +11,7 @@ const shippingInfo: ShippingItem[] = [
   {
     icon: Truck,
     title: "Free Shipping",
-    description: "On orders over $25",
+    description: "On orders over ₹150",
   },
   {
     icon: Clock,

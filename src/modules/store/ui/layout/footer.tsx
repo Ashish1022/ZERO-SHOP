@@ -3,9 +3,22 @@ import Link from "next/link";
 
 export const Footer = () => {
   const footerLinks = {
-    Shop: ["All Stickers", "Best Sellers", "New Arrivals", "Custom Orders"],
-    Support: ["FAQ", "Shipping Info", "Returns", "Contact Us"],
-    Company: ["About Us", "Careers", "Press", "Blog"],
+    Shop: [
+      { label: "All Stickers", href: "/products" },
+      { label: "Best Sellers", href: "/products?sort=best-selling" },
+      { label: "New Arrivals", href: "/products?sort=newest" },
+      { label: "Custom Orders", href: "/custom" },
+    ],
+    Support: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Shipping Info", href: "/shipping" },
+      { label: "Returns", href: "/returns" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+    Company: [
+      { label: "About Us", href: "/about" },
+      { label: "Blog", href: "/blog" },
+    ],
   };
 
   return (
@@ -40,12 +53,12 @@ export const Footer = () => {
               <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">{title}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <Link
-                      href="#"
+                      href={link.href}
                       className="text-surface-dark-foreground/60 hover:text-surface-dark-foreground transition-colors text-sm"
                     >
-                      {link}
+                      {link.label}
                     </Link>
                   </li>
                 ))}
@@ -59,10 +72,10 @@ export const Footer = () => {
             © 2026 STCKR. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="#" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
+            <Link href="/privacy" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
+            <Link href="/terms" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
               Terms of Service
             </Link>
           </div>

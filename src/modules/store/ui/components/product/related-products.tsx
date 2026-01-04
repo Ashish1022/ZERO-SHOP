@@ -122,11 +122,11 @@ export const RelatedProducts = ({ productId, categoryId }: RelatedProductsProps)
                 
                 <div className="flex items-center gap-2 mt-2">
                   <span className="font-bold text-foreground">
-                    ${Number(product.price).toFixed(2)}
+                  ₹{Number(product.price).toFixed(2)}
                   </span>
                   {product.compareAtPrice && Number(product.compareAtPrice) > Number(product.price) && (
                     <span className="text-xs text-muted-foreground line-through">
-                      ${Number(product.compareAtPrice).toFixed(2)}
+                      ₹{Number(product.compareAtPrice).toFixed(2)}
                     </span>
                   )}
                 </div>

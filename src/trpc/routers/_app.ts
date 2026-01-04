@@ -7,7 +7,7 @@ import { categoriesRouter } from "@/modules/categories/server/procedure";
 export const appRouter = createTRPCRouter({
     reviews: reviewsRouter,
     products: productsRouter,
-    categories: categoriesRouter
+    categories: categoriesRouter,
 })
 
 export type AppRouter = typeof appRouter;

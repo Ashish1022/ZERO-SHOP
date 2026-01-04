@@ -101,7 +101,7 @@ export const ProductsView = () => {
           price: product.price,
           image: product.primaryImage?.url || "",
           category: product.category?.name || "Uncategorized",
-          slug: product.slug
+          slug: product.slug,
         },
         1
       );
@@ -282,14 +282,14 @@ export const ProductsView = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-baseline gap-2">
                             <span className="text-lg font-bold">
-                              ${Number(product.price).toFixed(2)}
+                              ₹{Number(product.price).toFixed(2)}
                             </span>
                             {product.compareAtPrice &&
                               Number(product.compareAtPrice) >
                                 Number(product.price) && (
                                 <>
                                   <span className="text-sm text-muted-foreground line-through">
-                                    ${Number(product.compareAtPrice).toFixed(2)}
+                                    ₹{Number(product.compareAtPrice).toFixed(2)}
                                   </span>
                                   <Badge
                                     variant="destructive"

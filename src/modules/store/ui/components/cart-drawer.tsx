@@ -219,11 +219,11 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
 
                         <div className="text-right">
                           <p className="font-bold text-base tabular-nums">
-                            ${(Number(item.price) * item.quantity).toFixed(2)}
+                            ₹{(Number(item.price) * item.quantity).toFixed(2)}
                           </p>
                           {item.quantity > 1 && (
                             <p className="text-xs text-muted-foreground">
-                              ${Number(item.price).toFixed(2)} each
+                              ₹{Number(item.price).toFixed(2)} each
                             </p>
                           )}
                         </div>
@@ -240,7 +240,7 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-medium tabular-nums">
-                      ${subtotal.toFixed(2)}
+                      ₹{subtotal.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -251,14 +251,14 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                           FREE
                         </span>
                       ) : (
-                        `$${shipping.toFixed(2)}`
+                        `₹${shipping.toFixed(2)}`
                       )}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Tax (8%)</span>
                     <span className="font-medium tabular-nums">
-                      ${tax.toFixed(2)}
+                      ₹{tax.toFixed(2)}
                     </span>
                   </div>
 
@@ -267,7 +267,7 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-base">Total</span>
                     <span className="font-bold text-2xl tabular-nums">
-                      ${total.toFixed(2)}
+                      ₹{total.toFixed(2)}
                     </span>
                   </div>
                 </div>

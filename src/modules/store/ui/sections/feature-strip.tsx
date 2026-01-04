@@ -1,7 +1,7 @@
 import { Truck, Shield, Sparkles, RotateCcw } from "lucide-react";
 
 const features = [
-  { icon: Truck, text: "Free Shipping Over $25" },
+  { icon: Truck, text: "Free Shipping Over ₹150" },
   { icon: Shield, text: "Premium Quality Vinyl" },
   { icon: Sparkles, text: "Weatherproof & Durable" },
   { icon: RotateCcw, text: "Easy Returns" },

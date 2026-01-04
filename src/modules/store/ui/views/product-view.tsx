@@ -97,7 +97,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
               </div>
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-bold">
-                  ${Number(product.price).toFixed(2)}
+                ₹{Number(product.price).toFixed(2)}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   per sticker
@@ -146,7 +146,7 @@ export const ProductView = ({ slug }: { slug: string }) => {
                     onClick={handleAddToCart}
                   >
                     <ShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                    Add to Cart — $
+                    Add to Cart — ₹
                     {(Number(product.price) * quantity).toFixed(2)}
                   </Button>
                   <Button
