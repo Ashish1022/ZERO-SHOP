@@ -43,6 +43,14 @@ export const metadata: Metadata = {
     siteName: "ZERO | STICK",
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "https://zerostick.shop/hero-stickers.jpg",
+        width: 1200,
+        height: 630,
+        alt: "ZERO | STICK – Stickers for Everything You Love",
+      },
+    ],
   },
 
   twitter: {
