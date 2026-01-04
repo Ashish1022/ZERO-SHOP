@@ -27,19 +27,23 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
   const router = useRouter();
   const quantityRef = useRef(cart.totalQuantity);
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
-    if (
-      cart.totalQuantity &&
-      cart.totalQuantity !== quantityRef.current &&
-      cart.totalQuantity > 0
-    ) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      quantityRef.current = cart.totalQuantity;
+      return;
+    }
+
+    if (cart.totalQuantity > quantityRef.current && cart.totalQuantity > 0) {
       if (!isOpen) {
         setIsOpen(true);
       }
-      quantityRef.current = cart.totalQuantity;
     }
-  }, [isOpen, cart.totalQuantity, setIsOpen]);
+
+    quantityRef.current = cart.totalQuantity;
+  }, [cart.totalQuantity, isOpen, setIsOpen]);
 
   const subtotal = cart.items.reduce((total, item) => {
     return total + Number(item.price) * item.quantity;
@@ -256,7 +260,7 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Tax (8%)</span>
+                    <span className="text-muted-foreground">Tax (18%)</span>
                     <span className="font-medium tabular-nums">
                       ₹{tax.toFixed(2)}
                     </span>

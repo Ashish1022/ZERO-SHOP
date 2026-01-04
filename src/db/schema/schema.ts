@@ -273,53 +273,6 @@ export const shippingMethods = pgTable("shipping_methods", {
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
 });
 
-export const carts = pgTable("carts", {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    userId: uuid("user_id"),
-    sessionId: varchar("session_id", { length: 255 }),
-    deletedAt: timestamp("deleted_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
-}, (t) => ({
-    userIdIdx: index("carts_user_id_idx").on(t.userId),
-    userFk: foreignKey({
-        columns: [t.userId],
-        foreignColumns: [users.id],
-        name: "carts_user_id_fk"
-    }).onDelete("cascade")
-}));
-
-export const cartItems = pgTable("cart_items", {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    cartId: uuid("cart_id").notNull(),
-    productId: uuid("product_id").notNull(),
-    quantity: integer("quantity").default(1).notNull(),
-    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
-}, (t) => ({
-    cartIdIdx: index("cart_items_cart_id_idx").on(t.cartId),
-    cartFk: foreignKey({
-        columns: [t.cartId],
-        foreignColumns: [carts.id],
-        name: "cart_items_cart_id_fk"
-    }).onDelete("cascade")
-}));
-
-export const wishlists = pgTable("wishlists", {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    userId: uuid("user_id").notNull(),
-    productId: uuid("product_id").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
-}, (t) => ({
-    uniqueIdx: uniqueIndex("wishlists_user_product_idx").on(t.userId, t.productId),
-    userFk: foreignKey({
-        columns: [t.userId],
-        foreignColumns: [users.id],
-        name: "wishlists_user_id_fk"
-    }).onDelete("cascade")
-}));
-
 export const orders = pgTable("orders", {
     id: uuid().defaultRandom().primaryKey().notNull(),
     userId: uuid("user_id").notNull(),
@@ -388,53 +341,4 @@ export const orderStatusHistory = pgTable("order_status_history", {
         foreignColumns: [orders.id],
         name: "order_status_history_order_id_fk"
     }).onDelete("cascade")
-}));
-
-export const subscriptionPlans = pgTable("subscription_plans", {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    name: varchar("name", { length: 100 }).notNull(),
-    description: text("description"),
-    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-    currency: varchar("currency", { length: 10 }).default('INR').notNull(),
-    period: subscriptionPlanPeriodEnum("period").notNull(),
-    interval: integer("interval").default(1).notNull(),
-    razorpayPlanId: varchar("razorpay_plan_id", { length: 100 }),
-    isActive: boolean("is_active").default(true).notNull(),
-    popular: boolean("popular").default(false).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
-}, (t) => ({
-    nameIdx: uniqueIndex("subscription_plans_name_idx").on(t.name)
-}));
-
-export const subscriptions = pgTable("subscriptions", {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    userId: uuid("user_id").notNull(),
-    planId: uuid("plan_id").notNull(),
-    razorpaySubscriptionId: varchar("razorpay_subscription_id", { length: 100 }).notNull(),
-    status: subscriptionStatusEnum("status").notNull(),
-    startAt: timestamp("start_at", { withTimezone: true }),
-    endAt: timestamp("end_at", { withTimezone: true }),
-    currentStart: timestamp("current_start", { withTimezone: true }),
-    currentEnd: timestamp("current_end", { withTimezone: true }),
-    totalCount: integer("total_count"),
-    paidCount: integer("paid_count").default(0).notNull(),
-    remainingCount: integer("remaining_count"),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
-}, (t) => ({
-    userIdIdx: index("subscriptions_user_id_idx").on(t.userId),
-    planIdIdx: index("subscriptions_plan_id_idx").on(t.planId),
-    statusIdx: index("subscriptions_status_idx").on(t.status),
-    razorpayIdx: uniqueIndex("subscriptions_razorpay_id_idx").on(t.razorpaySubscriptionId),
-    userFk: foreignKey({
-        columns: [t.userId],
-        foreignColumns: [users.id],
-        name: "subscriptions_user_id_fk"
-    }).onDelete("restrict"),
-    planFk: foreignKey({
-        columns: [t.planId],
-        foreignColumns: [subscriptionPlans.id],
-        name: "subscriptions_plan_id_fk"
-    }).onDelete("restrict")
 }));
