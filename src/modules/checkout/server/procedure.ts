@@ -54,21 +54,43 @@ export const checkoutRouter = createTRPCRouter({
                     }
                 }
 
-                const FREE_SHIPPING_THRESHOLD = 50;
+                const FREE_SHIPPING_THRESHOLD = 150;
                 const SHIPPING_COST = 5.99;
                 const shippingAmount = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
 
-                const TAX_RATE = 0.08;
+                const TAX_RATE = 0.18;
                 const taxAmount = subtotal * TAX_RATE;
                 const total = subtotal - discountAmount + taxAmount + shippingAmount;
 
-                const [user] = await db.insert(users).values({
-                    firstName: input.firstName,
-                    lastName: input.lastName,
-                    email: input.email,
-                    phone: input.phone,
-                    password: ""
-                }).returning();
+                const existingUsers = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.email, input.email))
+                    .limit(1);
+
+                let user;
+                if (existingUsers.length > 0) {
+                    const [updatedUser] = await db
+                        .update(users)
+                        .set({
+                            firstName: input.firstName,
+                            lastName: input.lastName,
+                            phone: input.phone,
+                            updatedAt: new Date()
+                        })
+                        .where(eq(users.id, existingUsers[0].id))
+                        .returning();
+                    user = updatedUser;
+                } else {
+                    const [newUser] = await db.insert(users).values({
+                        firstName: input.firstName,
+                        lastName: input.lastName,
+                        email: input.email,
+                        phone: input.phone,
+                        password: "" 
+                    }).returning();
+                    user = newUser;
+                }
 
                 const [address] = await db.insert(addresses).values({
                     userId: user.id,
@@ -141,6 +163,7 @@ export const checkoutRouter = createTRPCRouter({
                     customerName: `${input.firstName} ${input.lastName}`
                 };
             } catch (error) {
+                console.error(error);
                 throw new TRPCError({
                     code: "INTERNAL_SERVER_ERROR",
                     message: error instanceof TRPCError ? error.message : "Failed to create order"
