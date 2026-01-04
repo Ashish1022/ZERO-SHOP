@@ -11,8 +11,8 @@ export const Footer = () => {
     ],
     Support: [
       { label: "FAQ", href: "/faq" },
-      { label: "Shipping Info", href: "/shipping" },
-      { label: "Returns", href: "/returns" },
+      { label: "Shipping Info", href: "/shipping-policy" },
+      { label: "Returns", href: "/cancellations-and-refunds" },
       { label: "Contact Us", href: "/contact" },
     ],
     Company: [
@@ -72,10 +72,10 @@ export const Footer = () => {
             © 2026 STCKR. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
+            <Link href="/privacy-policy" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
+            <Link href="/terms-and-conditions" className="text-sm text-surface-dark-foreground/40 hover:text-surface-dark-foreground transition-colors">
               Terms of Service
             </Link>
           </div>
