@@ -32,7 +32,6 @@ import {
 } from "@/modules/products/hooks/use-product-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import useCart from "@/hooks/use-cart";
-import toast from "react-hot-toast";
 
 export const ProductsView = () => {
   const router = useRouter();

@@ -1,55 +1,56 @@
-import { Plus } from "lucide-react";
-import Image from "next/image";
+"use client"
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 
-const stickers = [
-  {
-    id: 1,
-    name: "Shadow Knight",
-    price: "₹23.99",
-    category: "Anime",
-    image: "/sticker-anime-1.png",
-  },
-  {
-    id: 2,
-    name: "Geometric Skull",
-    price: "₹21.99",
-    category: "Pop Culture",
-    image: "/sticker-skull.png",
-  },
-  {
-    id: 3,
-    name: "Great Wave",
-    price: "₹20.99",
-    category: "Japanese Art",
-    image: "/sticker-wave.png",
-  },
-  {
-    id: 4,
-    name: "Kawaii Kitty",
-    price: "₹21.99",
-    category: "Cute",
-    image: "/sticker-cat.png",
-  },
-  {
-    id: 5,
-    name: "Retro Controller",
-    price: "₹19.99",
-    category: "Gaming",
-    image: "/sticker-gaming.png",
-  },
-  {
-    id: 6,
-    name: "Dragon Spirit",
-    price: "₹23.99",
-    category: "Fantasy",
-    image: "/sticker-dragon.png",
-  },
-];
+import { useTRPC } from "@/trpc/client";
+import useCart from "@/hooks/use-cart";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 export const FeaturedStickers = () => {
+  const router = useRouter();
+
+  const cart = useCart();
+
+  const trpc = useTRPC();
+  const { data } = useSuspenseInfiniteQuery(
+    trpc.products.getMany.infiniteQueryOptions(
+      { limit: 6 },
+      {
+        getNextPageParam: (lastPage) => {
+          return lastPage.nextCursor;
+        },
+      }
+    )
+  );
+
+  const products = data.pages.flatMap((page) => page.data);
+
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent, product: any) => {
+      e.stopPropagation();
+
+      cart.addItem(
+        {
+          productId: product.id.toString(),
+          name: product.name,
+          price: product.price,
+          image: product.primaryImage?.url || "",
+          category: product.category?.name || "Uncategorized",
+          slug: product.slug,
+        },
+        1
+      );
+    },
+    [cart]
+  );
+
   return (
     <section id="shop" className="py-24 md:py-32 bg-background">
       <div className="container mx-auto px-4">
@@ -68,40 +69,87 @@ export const FeaturedStickers = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          {stickers.map((sticker) => (
-            <div key={sticker.id} className="sticker-card group">
-              <div className="aspect-square bg-secondary p-6 md:p-8 flex items-center justify-center overflow-hidden">
-                <Image
-                  src={sticker.image}
-                  alt={sticker.name}
-                  width={400}
-                  height={400}
-                  className="sticker-image w-full h-full object-contain"
-                />
+          {products.map((product) => (
+            <Card
+              key={product.id}
+              className="group overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              onClick={() => router.push(`/products/${product.slug}`)}
+            >
+              <div className="relative aspect-square bg-secondary overflow-hidden">
+                {product.primaryImage ? (
+                  <Image
+                    src={product.primaryImage.url}
+                    alt={product.primaryImage.alt || product.name}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    <div className="text-center">
+                      <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No image</p>
+                    </div>
+                  </div>
+                )}
+                {product.badge && (
+                  <Badge
+                    variant="secondary"
+                    className="absolute top-2 left-2 capitalize"
+                  >
+                    {product.badge}
+                  </Badge>
+                )}
               </div>
-              <div className="p-4">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  {sticker.category}
-                </span>
-                <div className="flex items-center justify-between mt-1">
-                  <h3 className="font-semibold text-foreground">
-                    {sticker.name}
-                  </h3>
-                  <span className="font-bold text-foreground">
-                    {sticker.price}
-                  </span>
+              <CardContent className="p-4">
+                {product.category && (
+                  <p className="text-xs text-primary font-medium mb-1 uppercase tracking-wide">
+                    {product.category.name}
+                  </p>
+                )}
+                <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                  {product.name}
+                </h3>
+                {product.shortDescription && (
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    {product.shortDescription}
+                  </p>
+                )}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-lg font-bold">
+                      ₹{Number(product.price).toFixed(2)}
+                    </span>
+                    {product.compareAtPrice &&
+                      Number(product.compareAtPrice) >
+                        Number(product.price) && (
+                        <>
+                          <span className="text-sm text-muted-foreground line-through">
+                            ₹{Number(product.compareAtPrice).toFixed(2)}
+                          </span>
+                          <Badge variant="destructive" className="text-xs">
+                            {Math.round(
+                              ((Number(product.compareAtPrice) -
+                                Number(product.price)) /
+                                Number(product.compareAtPrice)) *
+                                100
+                            )}
+                            % OFF
+                          </Badge>
+                        </>
+                      )}
+                  </div>
+                  <Button
+                    size="sm"
+                    className="gap-2"
+                    onClick={(e) => handleAddToCart(e, product)}
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    Add to Bag
+                  </Button>
                 </div>
-              </div>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button
-                  size="icon"
-                  variant="default"
-                  className="h-8 w-8 rounded-full"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

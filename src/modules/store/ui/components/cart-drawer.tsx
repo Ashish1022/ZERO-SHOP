@@ -12,10 +12,9 @@ import {
 } from "@/components/ui/sheet";
 import useCart from "@/hooks/use-cart";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { CART_CONFIG, calculateCartTotals } from "@/lib/cart-config";
+import { calculateCartTotals } from "@/lib/cart-config";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,15 +26,8 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
   const router = useRouter();
   const quantityRef = useRef(cart.totalQuantity);
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
-  const isInitialMount = useRef(true);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      quantityRef.current = cart.totalQuantity;
-      return;
-    }
-
     if (cart.totalQuantity > quantityRef.current && cart.totalQuantity > 0) {
       if (!isOpen) {
         setIsOpen(true);
@@ -113,7 +105,10 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
             <Button
               variant="default"
               size="lg"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false)
+                router.push('/products')
+              }}
               className="mt-4"
             >
               Start Shopping
@@ -140,11 +135,10 @@ export const CartDrawer = ({ isOpen, setIsOpen }: CartDrawerProps) => {
                 {cart.items.map((item) => (
                   <div
                     key={item.productId}
-                    className={`flex gap-4 p-4 bg-card border border-border rounded-xl group hover:shadow-md transition-all duration-300 ${
-                      removingItems.has(item.productId)
-                        ? "opacity-0 scale-95"
-                        : "opacity-100 scale-100"
-                    }`}
+                    className={`flex gap-4 p-4 bg-card border border-border rounded-xl group hover:shadow-md transition-all duration-300 ${removingItems.has(item.productId)
+                      ? "opacity-0 scale-95"
+                      : "opacity-100 scale-100"
+                      }`}
                   >
                     <div
                       className="relative h-20 w-20 bg-secondary rounded-lg p-2 shrink-0 overflow-hidden cursor-pointer"

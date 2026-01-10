@@ -1,11 +1,110 @@
-import { db } from "@/db";
-import { categories, media, productImages, products } from "@/db/schema/schema";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { TRPCError } from "@trpc/server";
-import { and, asc, desc, eq, gt, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import z from "zod";
+import { and, asc, desc, eq, gt, inArray, isNull, ne, or, sql } from "drizzle-orm";
+
+import { createProductSchema } from "../schema";
+
+import { db } from "@/db";
+import { TRPCError } from "@trpc/server";
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { categories, media, productImages, products } from "@/db/schema/schema";
 
 export const productsRouter = createTRPCRouter({
+    createOne: baseProcedure
+        .input(createProductSchema)
+        .mutation(async ({ input }) => {
+
+            const { images: productImagesList, ...productData } = input;
+
+            const cleanedProductData = {
+                ...productData,
+                price: typeof productData.price === 'number' ? productData.price.toString() : productData.price,
+                compareAtPrice: productData.compareAtPrice
+                    ? (typeof productData.compareAtPrice === 'number' ? productData.compareAtPrice.toString() : productData.compareAtPrice)
+                    : null,
+                costPrice: productData.costPrice
+                    ? (typeof productData.costPrice === 'number' ? productData.costPrice.toString() : productData.costPrice)
+                    : null,
+                shippingCost: productData.shippingCost
+                    ? (typeof productData.shippingCost === 'number' ? productData.shippingCost.toString() : productData.shippingCost)
+                    : null,
+                weight: productData.weight
+                    ? (typeof productData.weight === 'number' ? productData.weight.toString() : productData.weight)
+                    : null,
+            };
+
+            const processedImages = await Promise.all(
+                (productImagesList || []).map(async (img, index) => {
+                    let imageId = img.imageId;
+
+                    if (imageId && imageId.startsWith('http')) {
+                        const urlParts = imageId.split('/');
+                        const filenameWithExt = urlParts[urlParts.length - 1];
+                        const filename = filenameWithExt.split('.')[0];
+
+                        const ext = filenameWithExt.split('.').pop()?.toLowerCase();
+                        const mimeTypeMap: Record<string, string> = {
+                            'jpg': 'image/jpeg',
+                            'jpeg': 'image/jpeg',
+                            'png': 'image/png',
+                            'gif': 'image/gif',
+                            'webp': 'image/webp',
+                            'svg': 'image/svg+xml'
+                        };
+                        const mimeType = ext ? mimeTypeMap[ext] || 'image/jpeg' : 'image/jpeg';
+
+                        const [mediaRecord] = await db
+                            .insert(media)
+                            .values({
+                                filename: filename,
+                                url: imageId,
+                                mimeType: mimeType,
+                                alt: productData.name || 'Product image',
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            })
+                            .returning();
+
+                        imageId = mediaRecord.id;
+                    }
+
+                    return {
+                        imageId,
+                        isPrimary: img.isPrimary ?? (index === 0),
+                        sortOrder: img.sortOrder ?? index,
+                    };
+                })
+            );
+
+            const [product] = await db
+                .insert(products)
+                .values({
+                    ...cleanedProductData,
+                    viewCount: 0,
+                    salesCount: 0,
+                    reviewCount: 0,
+                    averageRating: '0',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                })
+                .returning();
+
+            if (processedImages.length > 0) {
+                await db.insert(productImages).values(
+                    processedImages.map(img => ({
+                        productId: product.id,
+                        imageId: img.imageId,
+                        isPrimary: img.isPrimary,
+                        sortOrder: img.sortOrder,
+                        createdAt: new Date(),
+                    }))
+                );
+            }
+
+            return {
+                success: true,
+                product,
+            };
+        }),
     getOne: baseProcedure
         .input(
             z.object({
@@ -267,7 +366,7 @@ export const productsRouter = createTRPCRouter({
                 limit: z.number().min(1).max(100).default(12),
                 q: z.string().optional(),
                 categorySlug: z.string().optional(),
-                categorySlugs: z.array(z.string()).optional(),  
+                categorySlugs: z.array(z.string()).optional(),
                 sort: z.enum(['featured', 'low_to_high', 'high_to_low', 'newest']).optional().default('newest'),
                 status: z.enum(['draft', 'active', 'archived']).optional(),
                 featured: z.boolean().optional(),
@@ -489,5 +588,161 @@ export const productsRouter = createTRPCRouter({
                     cause: error,
                 });
             }
+        }),
+    updateOne: baseProcedure
+        .input(
+            z.object({
+                productId: z.string(),
+            }).merge(createProductSchema)
+        )
+        .mutation(async ({ input }) => {
+            const { productId, images: productImagesList, ...productData } = input;
+
+            const existingProduct = await db
+                .select({
+                    id: products.id,
+                    deletedAt: products.deletedAt
+                })
+                .from(products)
+                .where(eq(products.id, productId))
+                .limit(1);
+
+            if (!existingProduct || existingProduct.length === 0) {
+                throw new Error("Product not found");
+            }
+
+            if (existingProduct[0].deletedAt) {
+                throw new Error("Cannot update a deleted product");
+            }
+
+            const cleanedProductData = {
+                ...productData,
+                price: typeof productData.price === 'number' ? productData.price.toString() : productData.price,
+                compareAtPrice: productData.compareAtPrice
+                    ? (typeof productData.compareAtPrice === 'number' ? productData.compareAtPrice.toString() : productData.compareAtPrice)
+                    : null,
+                costPrice: productData.costPrice
+                    ? (typeof productData.costPrice === 'number' ? productData.costPrice.toString() : productData.costPrice)
+                    : null,
+                shippingCost: productData.shippingCost
+                    ? (typeof productData.shippingCost === 'number' ? productData.shippingCost.toString() : productData.shippingCost)
+                    : null,
+                weight: productData.weight
+                    ? (typeof productData.weight === 'number' ? productData.weight.toString() : productData.weight)
+                    : null,
+            };
+
+            const processedImages = await Promise.all(
+                (productImagesList || []).map(async (img, index) => {
+                    let imageId = img.imageId;
+
+                    if (imageId && imageId.startsWith('http')) {
+                        const urlParts = imageId.split('/');
+                        const filenameWithExt = urlParts[urlParts.length - 1];
+                        const filename = filenameWithExt.split('.')[0];
+
+                        const ext = filenameWithExt.split('.').pop()?.toLowerCase();
+                        const mimeTypeMap: Record<string, string> = {
+                            'jpg': 'image/jpeg',
+                            'jpeg': 'image/jpeg',
+                            'png': 'image/png',
+                            'gif': 'image/gif',
+                            'webp': 'image/webp',
+                            'svg': 'image/svg+xml'
+                        };
+                        const mimeType = ext ? mimeTypeMap[ext] || 'image/jpeg' : 'image/jpeg';
+
+                        const [mediaRecord] = await db
+                            .insert(media)
+                            .values({
+                                filename: filename,
+                                url: imageId,
+                                mimeType: mimeType,
+                                alt: productData.name || 'Product image',
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
+                            })
+                            .returning();
+
+                        imageId = mediaRecord.id;
+                    }
+
+                    return {
+                        imageId,
+                        isPrimary: img.isPrimary ?? (index === 0),
+                        sortOrder: img.sortOrder ?? index,
+                    };
+                })
+            );
+
+            const [product] = await db
+                .update(products)
+                .set({
+                    ...cleanedProductData,
+                    updatedAt: new Date(),
+                })
+                .where(eq(products.id, productId))
+                .returning();
+
+            await db
+                .delete(productImages)
+                .where(eq(productImages.productId, productId));
+
+            if (processedImages.length > 0) {
+                await db.insert(productImages).values(
+                    processedImages.map(img => ({
+                        productId: productId,
+                        imageId: img.imageId,
+                        isPrimary: img.isPrimary,
+                        sortOrder: img.sortOrder,
+                        createdAt: new Date(),
+                    }))
+                );
+            }
+
+            return {
+                success: true,
+                product,
+            };
+        }),
+
+    deleteOne: baseProcedure
+        .input(
+            z.object({
+                productId: z.string()
+            })
+        )
+        .mutation(async ({ input }) => {
+            const { productId } = input;
+
+            const product = await db
+                .select({
+                    id: products.id,
+                    deletedAt: products.deletedAt
+                })
+                .from(products)
+                .where(eq(products.id, productId))
+                .limit(1);
+
+            if (!product || product.length === 0) {
+                throw new Error("Product not found");
+            }
+
+            if (product[0].deletedAt) {
+                throw new Error("Product is already deleted");
+            }
+
+            await db
+                .update(products)
+                .set({
+                    deletedAt: new Date(),
+                    updatedAt: new Date(),
+                })
+                .where(eq(products.id, productId));
+
+            return {
+                success: true,
+                productId,
+            };
         }),
 })
