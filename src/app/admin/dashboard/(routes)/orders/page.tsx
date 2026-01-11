@@ -1,17 +1,15 @@
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
+import { getQueryClient, trpc } from "@/trpc/server";
+import { OrdersView } from "@/modules/orders/ui/views/orders-view";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { getQueryClient, trpc } from "@/trpc/server";
-import { AdminProductsView } from "@/modules/products/ui/views/admin-products-view";
-
-const AdminProductsPage = async () => {
+const OrdersPage = async () => {
   const queryClient = getQueryClient();
   void queryClient.prefetchInfiniteQuery(
-    trpc.products.getMany.infiniteQueryOptions({})
+    trpc.orders.getMany.infiniteQueryOptions({})
   );
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense
@@ -21,10 +19,10 @@ const AdminProductsPage = async () => {
           </div>
         }
       >
-        <AdminProductsView />
+        <OrdersView />
       </Suspense>
     </HydrationBoundary>
   );
 };
 
-export default AdminProductsPage;
+export default OrdersPage;

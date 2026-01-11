@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Confirmation - <%= companyName %>
+    </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 24px;
+        }
+
+        .confirmation-details {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #dcfce7;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #166534;
+        }
+
+        .detail-value {
+            color: #15803d;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #10b981;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .timeline {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 24px;
+            border-left: 4px solid #10b981;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+
+        .timeline-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .timeline-content p {
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-box h3 svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .info-list {
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-list li {
+            margin-bottom: 6px;
+        }
+
+        .contact-info {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            color: #a16207;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .contact-info p {
+            color: #a16207;
+            margin-bottom: 8px;
+        }
+
+        .contact-info a {
+            color: #a16207;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background: #f7fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: 40px;
+            margin: 0 auto 16px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .footer p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .social-links {
+            margin-top: 16px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #718096;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            color: #10b981;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .detail-value {
+                margin-top: 4px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .timeline-icon {
+                margin: 0 auto 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="success-icon">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <h1>Application Received!</h1>
+            <p>Thank you for your interest in <%= companyName %>
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">
+                Hi <%= fullName %>,
+            </div>
+
+            <p style="margin-bottom: 24px; color: #4a5568; font-size: 16px;">
+                Great news! We've successfully received your job application for the <strong>
+                    <%= position %>
+                </strong> position.
+                Your application is now in our system and will be reviewed by our hiring team.
+            </p>
+
+            <!-- Confirmation Details -->
+            <div class="confirmation-details">
+                <div class="detail-row">
+                    <span class="detail-label">Application ID:</span>
+                    <span class="detail-value">#<%= applicationId || 'APP-' + Date.now().toString().slice(-6) %></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Position:</span>
+                    <span class="detail-value">
+                        <%= position %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Department:</span>
+                    <span class="detail-value">
+                        <%= department || 'Not specified' %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Submitted:</span>
+                    <span class="detail-value">
+                        <%= new Date().toLocaleDateString('en-US', { weekday: 'long' , year: 'numeric' , month: 'long' ,
+                            day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="section">
+                <h2>What Happens Next?</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Application Review</h3>
+                            <p>Our HR team will review your application and resume within 3-5 business days.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Initial Screening</h3>
+                            <p>If your profile matches our requirements, we'll contact you for a phone or video
+                                screening.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="timeline-content">
+                            <h3>Interview Process</h3>
+                            <p>Successful candidates will be invited for interviews with the hiring manager and team
+                                members.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Information -->
+            <div class="info-box">
+                <h3>
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Important Information
+                </h3>
+                <ul class="info-list">
+                    <li>Keep this email for your records - you may need the Application ID for reference</li>
+                    <li>We typically respond within <strong>
+                            <%= responseTime || '1-2 weeks' %>
+                        </strong> of receiving applications</li>
+                    <li>If you don't hear from us within this timeframe, feel free to follow up</li>
+                    <li>Please check your spam folder regularly for updates from us</li>
+                    <% if (typeof additionalInfo !=='undefined' && additionalInfo) { %>
+                        <li>
+                            <%= additionalInfo %>
+                        </li>
+                        <% } %>
+                </ul>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h3>Questions About Your Application?</h3>
+                <p>Feel free to reach out to our HR team:</p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:<%= hrEmail || 'hr@company.com' %>">
+                        <%= hrEmail || 'hr@company.com' %>
+                    </a>
+                </p>
+                <% if (typeof hrPhone !=='undefined' && hrPhone) { %>
+                    <p>
+                        <strong>Phone:</strong> <a href="tel:<%= hrPhone %>">
+                            <%= hrPhone %>
+                        </a>
+                    </p>
+                    <% } %>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="company-logo">
+                <%= companyName %>
+            </div>
+            <p>&copy; <%= new Date().getFullYear() %>
+                    <%= companyName %>. All rights reserved.</p>
+            <p>
+                <%= companyAddress || 'Company Address' %>
+            </p>
+
+            <% if (typeof socialLinks !=='undefined' && socialLinks) { %>
+                <div class="social-links">
+                    <% if (socialLinks.website) { %>
+                        <a href="<%= socialLinks.website %>" target="_blank">Website</a>
+                        <% } %>
+                            <% if (socialLinks.linkedin) { %>
+                                <a href="<%= socialLinks.linkedin %>" target="_blank">LinkedIn</a>
+                                <% } %>
+                                    <% if (socialLinks.twitter) { %>
+                                        <a href="<%= socialLinks.twitter %>" target="_blank">Twitter</a>
+                                        <% } %>
+                </div>
+                <% } %>
+
+                    <p style="margin-top: 16px; font-size: 12px;">
+                        This is an automated message. Please do not reply directly to this email.
+                    </p>
+        </div>
+    </div>
+</body>
+
+</html>

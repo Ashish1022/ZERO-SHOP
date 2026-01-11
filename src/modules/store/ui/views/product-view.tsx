@@ -39,7 +39,6 @@ export const ProductView = ({ slug }: { slug: string }) => {
       },
       quantity
     );
-    toast.success(`${quantity}x ${product.name} added to your cart.`);
   };
 
   const handleWishlist = () => {

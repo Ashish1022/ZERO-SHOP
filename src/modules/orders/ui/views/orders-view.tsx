@@ -1,12 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Plus, RefreshCw, Eye, ShoppingCart, Star } from "lucide-react";
-import { useTRPC } from "@/trpc/client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { DataTable } from "@/components/ui/data-table";
-import { columns, ProductColumn } from "../../lib/columns";
 import {
   Card,
   CardContent,
@@ -14,21 +9,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { DataTable } from "@/components/ui/data-table";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import {
+  RefreshCw,
+  ShoppingBag,
+  DollarSign,
+  Package,
+  TrendingUp,
+} from "lucide-react";
+import { columns, OrderColumn } from "../../lib/columns";
 
-export const AdminProductsView = () => {
-  const router = useRouter();
+export const OrdersView = () => {
   const trpc = useTRPC();
 
   const {
-    data: products,
+    data: orders,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
     refetch,
     isRefetching,
   } = useSuspenseInfiniteQuery(
-    trpc.products.getMany.infiniteQueryOptions(
+    trpc.orders.getMany.infiniteQueryOptions(
       {},
       {
         getNextPageParam: (lastPage) => {
@@ -38,46 +42,49 @@ export const AdminProductsView = () => {
     )
   );
 
-  const flattenedProducts: ProductColumn[] = products.pages.flatMap((page) =>
-    page.data.map((product) => ({
-      id: product.id,
-      name: product.name,
-      price: `$${parseFloat(product.price).toFixed(2)}`,
-      status: product.status,
-      badge: product.badge,
-      viewCount: product.viewCount || 0,
-      salesCount: product.salesCount || 0,
-      rating: product.averageRating ? parseFloat(product.averageRating) : 0,
-      primaryImageUrl:
-        product.primaryImage?.url || product.primaryImage?.thumbnailUrl,
+  const flattenedOrders: OrderColumn[] = orders.pages.flatMap((page) =>
+    page.data.map((order) => ({
+      id: order.id,
+      orderNumber: order.orderNumber,
+      customerName: order.shippingAddress
+        ? `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`
+        : "Guest Customer",
+      email: order.shippingAddress?.email || "",
+      phone: order.shippingAddress?.phone || "",
+      total: `₹${parseFloat(order.total).toFixed(2)}`,
+      totalNumeric: parseFloat(order.total),
+      status: order.status,
+      paymentStatus: order.paymentStatus,
+      paymentMethod: order.paymentMethod,
+      createdAt: order.createdAt,
     }))
   );
 
-  const totalCount = flattenedProducts.length;
-  const activeCount = flattenedProducts.filter(
-    (p) => p.status === "active"
-  ).length;
-  const featuredCount = flattenedProducts.filter((p) => p.badge).length;
-  const totalViews = flattenedProducts.reduce((sum, p) => sum + p.viewCount, 0);
-  const totalSales = flattenedProducts.reduce(
-    (sum, p) => sum + p.salesCount,
+  const totalCount = flattenedOrders.length;
+  const totalRevenue = flattenedOrders.reduce(
+    (sum, order) => sum + order.totalNumeric,
     0
   );
-  const avgRating =
-    flattenedProducts.length > 0
-      ? flattenedProducts.reduce((sum, p) => sum + p.rating, 0) /
-        flattenedProducts.filter((p) => p.rating > 0).length
-      : 0;
+  const pendingCount = flattenedOrders.filter(
+    (o) => o.status === "pending"
+  ).length;
+  const deliveredCount = flattenedOrders.filter(
+    (o) => o.status === "delivered"
+  ).length;
+  const processingCount = flattenedOrders.filter(
+    (o) => o.status === "processing" || o.status === "confirmed"
+  ).length;
+  const avgOrderValue = totalCount > 0 ? totalRevenue / totalCount : 0;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <h2 className="text-3xl font-bold tracking-tight bg-linear-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Products
+            Orders
           </h2>
           <p className="text-sm text-muted-foreground">
-            Manage your product catalog and inventory
+            Manage and track all customer orders
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -92,73 +99,66 @@ export const AdminProductsView = () => {
               className={`h-4 w-4 ${isRefetching ? "animate-spin" : ""}`}
             />
           </Button>
-          <Button
-            onClick={() => router.push(`/admin/dashboard/products/new`)}
-            variant={"elevated"}
-          >
-            <Plus className="h-4 w-4" />
-            Add Product
-          </Button>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border hover:border-primary/50 transition-colors duration-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Products
-            </CardTitle>
-            <Badge variant="secondary" className="text-lg font-bold">
-              {totalCount}
-            </Badge>
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalCount}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              {activeCount} active
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border hover:border-blue-500/50 transition-colors duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-            <Eye className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalViews.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Product page views
+              {pendingCount} pending
             </p>
           </CardContent>
         </Card>
 
         <Card className="border hover:border-green-500/50 transition-colors duration-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <DollarSign className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {totalSales.toLocaleString()}
+              ₹
+              {totalRevenue.toLocaleString("en-IN", {
+                maximumFractionDigits: 2,
+              })}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Units sold</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              All time earnings
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border hover:border-yellow-500/50 transition-colors duration-200">
+        <Card className="border hover:border-blue-500/50 transition-colors duration-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+            <CardTitle className="text-sm font-medium">Processing</CardTitle>
+            <Package className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{processingCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Being prepared</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border hover:border-orange-500/50 transition-colors duration-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg Order</CardTitle>
+            <TrendingUp className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {avgRating > 0 ? avgRating.toFixed(1) : "—"}
+              ₹
+              {avgOrderValue.toLocaleString("en-IN", {
+                maximumFractionDigits: 2,
+              })}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Customer reviews
+              {deliveredCount} completed
             </p>
           </CardContent>
         </Card>
@@ -166,16 +166,16 @@ export const AdminProductsView = () => {
 
       <Card className="shadow-md">
         <CardHeader>
-          <CardTitle>Product Catalog</CardTitle>
+          <CardTitle>Order Management</CardTitle>
           <CardDescription>
-            View and manage all products in your inventory
+            View and manage all customer orders and their status
           </CardDescription>
         </CardHeader>
         <CardContent>
           <DataTable
             columns={columns}
-            data={flattenedProducts}
-            searchKey={["name"]}
+            data={flattenedOrders}
+            searchKey={["orderNumber", "customerName", "email"]}
           />
 
           {hasNextPage && (
@@ -192,7 +192,7 @@ export const AdminProductsView = () => {
                     Loading...
                   </>
                 ) : (
-                  "Load More Products"
+                  "Load More Orders"
                 )}
               </Button>
             </div>

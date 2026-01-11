@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZERO | HUB Activation Mail</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+
+    .email-wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .email-header {
+      background-color: #624cf5;
+      color: #ffffff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .email-header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .email-body {
+      padding: 32px 24px;
+    }
+
+    .email-body h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #624cf5;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .email-body p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 16px 0;
+    }
+
+    .email-footer {
+      background-color: #f0f2f5;
+      padding: 24px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+    }
+
+    a {
+      color: #624cf5;
+      text-decoration: none;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #624cf5;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="email-wrapper">
+    <div class="email-header">
+      <h1>Welcome to ZERO | HUB</h1>
+    </div>
+    <div class="email-body">
+      <p>Hello <strong><%= name %></strong>,</p>
+      <p>Thank you for registering with ZERO | HUB. To activate your account, please use the following one-time activation code:</p>
+      <h2><%= otp %></h2>
+      <p>This code is valid for the next <strong>5 minutes</strong>. Please enter it on the activation page to complete your setup.</p>
+      <p>If you did not register for a ZERO | HUB account, you can safely ignore this email.</p>
+    </div>
+    <div class="email-footer">
+      <p>
+        Need help? Reach out to us at
+        <a href="mailto:zero.business.hub@gmail.com">zero.business.hub@gmail.com</a>
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

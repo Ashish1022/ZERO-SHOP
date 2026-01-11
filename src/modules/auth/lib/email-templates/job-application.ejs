@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application - <%= name %>
+    </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .applicant-info {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 8px 0;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 80px;
+            margin-right: 12px;
+        }
+
+        .info-value {
+            color: #2d3748;
+            flex-grow: 1;
+        }
+
+        .info-value a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .cover-letter {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            white-space: pre-line;
+            line-height: 1.7;
+            color: #4a5568;
+        }
+
+        .attachments {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .attachment-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .attachment-item:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .attachment-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .attachment-info {
+            flex-grow: 1;
+        }
+
+        .attachment-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .attachment-type {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .footer {
+            background: #f7fafc;
+            padding: 24px 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .footer .date {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .applicant-info {
+                padding: 20px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info-label {
+                margin-bottom: 4px;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Job Application</h1>
+            <p>New application received</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Applicant Information -->
+            <div class="applicant-info">
+                <div class="info-row">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">
+                        <%= name %>
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg>
+                    <span class="info-label">Email:</span>
+                    <span class="info-value"><a href="mailto:<%= email %>">
+                            <%= email %>
+                        </a></span>
+                </div>
+
+                <div class="info-row">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z">
+                        </path>
+                    </svg>
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value"><a href="tel:<%= phone %>">
+                            <%= phone %>
+                        </a></span>
+                </div>
+
+                <!-- <% if (typeof position !=='undefined' && position) { %>
+                    <div class="info-row">
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm6-1a1 1 0 00-1-1H9a1 1 0 00-1 1v1h4V5z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="info-label">Position:</span>
+                        <span class="info-value">
+                            <%= position %>
+                        </span>
+                    </div>
+                    <% } %> -->
+            </div>
+
+            <!-- Cover Letter -->
+            <% if (typeof coverLetter !=='undefined' && coverLetter) { %>
+                <div class="section">
+                    <h2>Cover Letter</h2>
+                    <div class="cover-letter">
+                        <%= coverLetter %>
+                    </div>
+                </div>
+                <% } %>
+
+                    <!-- Attachments -->
+                    <div class="section">
+                        <h2>Attachments</h2>
+                        <div class="attachments">
+                            <% if (typeof resumeFilename !=='undefined' && resumeFilename) { %>
+                                <div class="attachment-item">
+                                    <svg class="attachment-icon" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div class="attachment-info">
+                                        <div class="attachment-name">Resume</div>
+                                        <div class="attachment-type">
+                                            <%= resume || 'resume.pdf' %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <% if (typeof additionalDocuments !=='undefined' && additionalDocuments &&
+                                        additionalDocuments.length> 0) { %>
+                                        <% additionalDocuments.forEach(function(doc) { %>
+                                            <div class="attachment-item">
+                                                <svg class="attachment-icon" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div class="attachment-info">
+                                                    <div class="attachment-name">
+                                                        <%= doc.name %>
+                                                    </div>
+                                                    <div class="attachment-type">
+                                                        <%= doc.filename %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                                <% } %>
+                        </div>
+                    </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>This application was submitted on</p>
+            <p class="date">
+                <%= new Date().toLocaleDateString('en-US', { weekday: 'long' , year: 'numeric' , month: 'long' ,
+                    day: 'numeric' }) %>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

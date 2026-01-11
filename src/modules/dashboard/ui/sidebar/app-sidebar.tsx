@@ -36,7 +36,7 @@ const mainItems = [
   },
   {
     name: "Orders",
-    url: "/dashboard/orders",
+    url: "/admin/dashboard/orders",
     icon: ShoppingCart,
   },
   {

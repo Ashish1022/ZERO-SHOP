@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -26,8 +27,14 @@ const AdminProductPage = async ({ params }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense>
-        <AdminProductView productId={productId}/>
+      <Suspense
+        fallback={
+          <div className="w-full h-full flex items-center justify-center">
+            <Loader2 className="animate-spin h-4 w-4" />
+          </div>
+        }
+      >
+        <AdminProductView productId={productId} />
       </Suspense>
     </HydrationBoundary>
   );

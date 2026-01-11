@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -20,8 +21,14 @@ const AdminCategoryPage = async ({ params }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense>
-        <AdminCategoryView categoryId={categoryId}/>
+      <Suspense
+        fallback={
+          <div className="w-full h-full flex items-center justify-center">
+            <Loader2 className="animate-spin h-4 w-4" />
+          </div>
+        }
+      >
+        <AdminCategoryView categoryId={categoryId} />
       </Suspense>
     </HydrationBoundary>
   );
