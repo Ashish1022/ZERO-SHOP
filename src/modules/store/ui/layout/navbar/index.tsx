@@ -18,8 +18,7 @@ export const Navbar = () => {
   const navLinks = [
     { name: "Shop", href: "/products" },
     { name: "Collections", href: "/categories" },
-    { name: "Custom", href: "#custom" },
-    { name: "About", href: "#about" },
+    // { name: "Custom", href: "/custom" },
   ];
 
   return (

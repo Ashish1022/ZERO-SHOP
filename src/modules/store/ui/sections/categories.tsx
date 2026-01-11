@@ -1,26 +1,30 @@
-import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 const categories = [
   {
-    name: "Anime",
+    name: "Anime Stickers",
     count: "150+",
     description: "From classic to modern anime characters",
+    slug: "anime-stickers",
   },
   {
-    name: "Pop Culture",
+    name: "Cute Kawaii Stickers",
     count: "200+",
     description: "Movies, music, and internet icons",
+    slug: "cute-kawaii-stickers",
   },
   {
-    name: "Custom",
+    name: "Gaming Stickers",
     count: "∞",
     description: "Design your own unique stickers",
+    slug: "gaming-stickers",
   },
   {
-    name: "Gaming",
+    name: "Travel Stickers",
     count: "80+",
     description: "Level up your gear with gaming stickers",
+    slug: "travel-stickers",
   },
 ];
 
@@ -43,8 +47,8 @@ export const Categories = () => {
         <div className="grid md:grid-cols-2 gap-4">
           {categories.map((category, index) => (
             <Link
-              key={category.name}
-              href="#"
+              key={category.slug}
+              href={`/products?category=${category.slug}`}
               className="group relative p-8 md:p-12 border border-surface-dark-foreground/10 rounded-lg hover:border-surface-dark-foreground/30 hover:bg-surface-dark-foreground/5 transition-all duration-300"
             >
               <div className="flex items-start justify-between">

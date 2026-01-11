@@ -1,66 +1,98 @@
 "use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import FlowingMenu from "@/components/flow-menu";
-import { ArrowUpRight, Sparkles, Grid3x3 } from "lucide-react";
+import { ArrowUpRight, Sparkles, Grid3x3, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const categories = [
   {
-    name: "Anime",
+    name: "Anime Stickers",
+    slug: "anime-stickers",
     count: "150+",
     description: "From classic to modern anime characters",
     image:
-      "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1541562232579-512a21360020?w=1200&h=800&fit=crop", 
     color: "from-pink-500/20 to-purple-500/20",
   },
   {
-    name: "Pop Culture",
+    name: "Cute Kawaii Stickers",
+    slug: "cute-kawaii-stickers",
     count: "200+",
-    description: "Movies, music, and internet icons",
+    description: "Adorable kawaii designs and characters",
     image:
-      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1618331835717-801e976710b2?w=1200&h=800&fit=crop",
     color: "from-blue-500/20 to-cyan-500/20",
   },
   {
-    name: "Custom",
+    name: "Gaming Stickers",
+    slug: "gaming-stickers",
     count: "∞",
-    description: "Design your own unique stickers",
+    description: "Level up your gear with gaming icons",
     image:
-      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=1200&h=800&fit=crop", 
     color: "from-amber-500/20 to-orange-500/20",
   },
   {
-    name: "Gaming",
+    name: "Travel Stickers",
+    slug: "travel-stickers",
     count: "80+",
-    description: "Level up your gear with gaming stickers",
+    description: "Adventure awaits with travel designs",
     image:
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop", 
     color: "from-green-500/20 to-emerald-500/20",
   },
   {
-    name: "Nature",
+    name: "Nature Stickers",
+    slug: "nature-stickers",
     count: "120+",
     description: "Plants, animals, and natural wonders",
     image:
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&h=800&fit=crop", 
     color: "from-teal-500/20 to-green-500/20",
   },
   {
-    name: "Abstract",
+    name: "Abstract Stickers",
+    slug: "abstract-stickers",
     count: "95+",
     description: "Geometric patterns and artistic designs",
     image:
-      "https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1526318472351-c75fcf070305?w=1200&h=800&fit=crop",
     color: "from-indigo-500/20 to-purple-500/20",
   },
 ];
 
+
 export default function CategoriesPage() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % categories.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + categories.length) % categories.length);
+  };
+
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, currentSlide]);
+
   return (
     <div className="min-h-screen bg-white">
       <div className="relative overflow-hidden bg-black text-white">
         <div className="absolute inset-0 bg-linear-to-br from-zinc-900 via-black to-zinc-900" />
         <div className="container mx-auto px-4 py-24 md:py-32 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 mb-8 animate-fade-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 mb-8">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
@@ -68,19 +100,13 @@ export default function CategoriesPage() {
               <span className="text-sm font-medium">Explore Collections</span>
             </div>
 
-            <h1
-              className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] mb-6 animate-fade-up"
-              style={{ animationDelay: "0.1s" }}
-            >
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[0.9] mb-6">
               Discover Your
               <br />
               <span className="text-zinc-400">Style</span>
             </h1>
 
-            <p
-              className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto animate-fade-up"
-              style={{ animationDelay: "0.2s" }}
-            >
+            <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto">
               Browse through our curated collections of premium vinyl stickers.
               From anime to abstract, find the perfect design for your
               personality.
@@ -97,45 +123,105 @@ export default function CategoriesPage() {
 
       <section className="py-0">
         <div className="container mx-auto px-4 -mt-20 relative z-10">
-          <a
-            href={`/products?category=${categories[0].name.toLowerCase()}`}
-            className="group block relative rounded-2xl overflow-hidden aspect-21/9 hover:shadow-2xl transition-all duration-500"
-          >
-            <img
-              src={categories[0].image}
-              alt={categories[0].name}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+          <div className="relative rounded-2xl overflow-hidden">
+            <div className="relative aspect-21/9">
+              {categories.map((category, index) => (
+                <Link
+                  key={category.name}
+                  href={`/products?category=${category.slug}`}
+                  className={`absolute inset-0 transition-opacity duration-700 ${
+                    index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                  } group block`}
+                  onMouseEnter={() => setIsAutoPlaying(false)}
+                  onMouseLeave={() => setIsAutoPlaying(true)}
+                >
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    priority={index === 0}
+                  />
 
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
 
-            <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
-              <div className="max-w-2xl transform transition-transform group-hover:-translate-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-medium mb-4">
-                  <Sparkles className="h-3 w-3" />
-                  Featured Collection
-                </div>
+                  <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
+                    <div className="max-w-2xl transform transition-transform group-hover:-translate-y-2">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-medium mb-4">
+                        <Sparkles className="h-3 w-3" />
+                        Featured Collection
+                      </div>
 
-                <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-                  {categories[0].name}
-                </h2>
+                      <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                        {category.name}
+                      </h2>
 
-                <p className="text-lg text-white/80 mb-6">
-                  {categories[0].description}
-                </p>
+                      <p className="text-lg text-white/80 mb-6">
+                        {category.description}
+                      </p>
 
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-white/60">
-                    {categories[0].count} designs
-                  </span>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm font-medium text-white/60">
+                          {category.count} designs
+                        </span>
 
-                  <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <ArrowUpRight className="h-6 w-6" />
+                        <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <ArrowUpRight className="h-6 w-6" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </Link>
+              ))}
             </div>
-          </a>
+
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                prevSlide();
+                setIsAutoPlaying(false);
+              }}
+              variant="ghost"
+              size="icon"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:text-white"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                nextSlide();
+                setIsAutoPlaying(false);
+              }}
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:text-white"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </Button>
+
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+              {categories.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentSlide(index);
+                    setIsAutoPlaying(false);
+                  }}
+                  className={`h-1.5 rounded-full transition-all ${
+                    index === currentSlide
+                      ? 'w-8 bg-white'
+                      : 'w-1.5 bg-white/40 hover:bg-white/60'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -155,15 +241,16 @@ export default function CategoriesPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category) => (
-              <a
+              <Link
                 key={category.name}
-                href={`/products?category=${category.name.toLowerCase()}`}
+                href={`/products?category=${category.slug}`}
                 className="group relative rounded-xl overflow-hidden aspect-square hover:shadow-2xl transition-all duration-500"
               >
-                <img
+                <Image
                   src={category.image}
                   alt={category.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
 
                 <div
@@ -189,7 +276,7 @@ export default function CategoriesPage() {
                     </span>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -208,19 +295,19 @@ export default function CategoriesPage() {
               life. Our design team is ready to help!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <Link
                 href="/custom"
                 className="group px-8 py-4 bg-white text-black rounded-lg font-medium hover:bg-zinc-100 transition-colors inline-flex items-center justify-center gap-2"
               >
                 Create Custom Design
                 <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/products"
                 className="px-8 py-4 border-2 border-white/20 rounded-lg font-medium hover:bg-white/10 transition-colors"
               >
                 View All Products
-              </a>
+              </Link>
             </div>
           </div>
         </div>
