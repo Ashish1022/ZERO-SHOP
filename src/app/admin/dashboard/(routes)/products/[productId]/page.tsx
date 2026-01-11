@@ -20,7 +20,7 @@ const AdminProductPage = async ({ params }: Props) => {
 
   void queryClient.prefetchInfiniteQuery(
     trpc.categories.getMany.infiniteQueryOptions({
-      limit: 50,
+      limit: 10,
     })
   );
 

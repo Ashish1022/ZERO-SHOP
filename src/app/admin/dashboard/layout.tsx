@@ -1,10 +1,15 @@
+import { redirect } from "next/navigation";
+
+import { caller } from "@/trpc/server";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Navbar } from "@/modules/dashboard/ui/layout/navbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/modules/dashboard/ui/sidebar/app-sidebar";
 import { SitebarHeader } from "@/modules/dashboard/ui/sidebar/sidebar-header";
-import { ThemeProvider } from "@/providers/theme-provider";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  // const { isAuthenticated } = await caller.auth.session();
+  // if (!isAuthenticated) redirect("/");
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
       <Navbar />
