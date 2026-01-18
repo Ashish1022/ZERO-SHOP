@@ -9,6 +9,14 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+function getAbsoluteUrl(url: string): string {
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  return `https://zerostick.shop/${cleanUrl}`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const queryClient = getQueryClient();
@@ -20,8 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const canonicalUrl = `https://zerostick.shop/products/${slug}`;
 
-    const price = Number(product.price).toFixed(2);
-    const currency = "INR";
+    const primaryImage = product.images[0];
+    const imageUrl = primaryImage ? getAbsoluteUrl(primaryImage.url) : null;
 
     return {
       title: product.seoTitle || `${product.name} | ZERO | STICK`,
@@ -32,23 +40,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: product.name,
         description: product.description || undefined,
         siteName: "ZERO | STICK",
-        images: product.images[0]
+        images: imageUrl
           ? [
             {
-              url: product.images[0].url,
+              url: imageUrl,
               width: 1200,
               height: 630,
-              alt: product.images[0].alt || product.name,
-              type: "image/jpeg",
+              alt: primaryImage.alt || product.name,
             },
           ]
           : [],
+        locale: "en_IN",
       },
       twitter: {
         card: "summary_large_image",
         title: product.seoTitle || product.name,
         description: product.seoDescription || product.description || undefined,
-        images: product.images[0]?.url ? [product.images[0].url] : [],
+        images: imageUrl ? [imageUrl] : [],
       },
       alternates: {
         canonical: canonicalUrl,
@@ -109,13 +117,13 @@ const ProductPage = async ({ params }: Props) => {
       })
     ),
   ]);
-
+  const absoluteImages = product.images.map(img => getAbsoluteUrl(img.url));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.images.map((img) => img.url),
+    image: absoluteImages,
     brand: {
       "@type": "Brand",
       name: "ZERO | STICK",
@@ -124,7 +132,7 @@ const ProductPage = async ({ params }: Props) => {
       offers: {
         "@type": "Offer",
         price: Number(product.price).toFixed(2),
-        priceCurrency: "INR", // FIX: Changed from USD to INR
+        priceCurrency: "INR",
         availability: "https://schema.org/InStock",
         url: `https://zerostick.shop/products/${slug}`,
         priceValidUntil: new Date(
