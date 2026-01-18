@@ -1,25 +1,39 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback } from "react";
+import toast from "react-hot-toast";
 
 import { HeroSection } from "../components/custom/hero";
-import { StickerPreview } from "../components/custom/sticker-preview";
-import { ImagePlus, Upload, X } from "lucide-react";
-import { Slider } from "@/components/ui/slider";
+import { StickerStudioForm } from "../components/custom/studio-form";
+import { PricingBar } from "../components/custom/pricing";
+import { HowItWorksSection } from "../components/custom/work";
+import { CommunityGallery } from "../components/custom/gallery";
+import { PreviewModal } from "../components/custom/preview-modal";
 
-export type StickerShape = "die-cut" | "circle" | "square" | "rectangle";
-export type StickerMaterial = "matte" | "glossy" | "holographic";
+import useCart from "@/hooks/use-cart";
+import useGalleryStore from "@/hooks/use-gallery";
+import { calculatePrice } from "@/lib/utils";
+import type { StickerShape, StickerMaterial } from "@/types";
 
 export const CustomView = () => {
-  const [isDragging, setIsDragging] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [selectedShape, setSelectedShape] = useState<StickerShape>("die-cut");
   const [selectedMaterial, setSelectedMaterial] =
     useState<StickerMaterial>("matte");
-    const [stickerWidth, setStickerWidth] = useState(3);
+  const [stickerWidth, setStickerWidth] = useState(3);
+  const [quantity, setQuantity] = useState(1);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [stickerName, setStickerName] = useState("");
+  const [artistName, setArtistName] = useState("");
+  const [shareToGallery, setShareToGallery] = useState(false);
+  const [galleryTab, setGalleryTab] = useState<"all" | "mine">("all");
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cart = useCart();
+  const galleryStore = useGalleryStore();
+
+  const price = calculatePrice(stickerWidth, selectedMaterial, quantity);
+  const unitPrice = Math.round(price / quantity);
 
   const handleFile = useCallback((file: File) => {
     if (file && file.type.startsWith("image/")) {
@@ -61,111 +75,114 @@ export const CustomView = () => {
 
   const clearImage = () => {
     setUploadedImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  };
+
+  const handleAddToCart = () => {
+    if (!uploadedImage) {
+      toast.error("Please upload an image first!");
+      return;
     }
+    setShowPreviewModal(true);
+  };
+
+  const confirmAddToCart = () => {
+    if (!uploadedImage) return;
+
+    cart.addItem(
+      {
+        productId: `custom-${Date.now()}`,
+        name:
+          stickerName || `Custom ${selectedShape} Sticker (${stickerWidth}")`,
+        price: String(unitPrice),
+        image: uploadedImage,
+        category: "Custom Stickers",
+        slug: `custom-sticker-${Date.now()}`,
+      },
+      quantity
+    );
+
+    if (shareToGallery && stickerName && artistName) {
+      galleryStore.addSticker({
+        image: uploadedImage,
+        name: stickerName,
+        artist: artistName.startsWith("@") ? artistName : `@${artistName}`,
+        shape: selectedShape,
+        material: selectedMaterial,
+        size: stickerWidth,
+        isUserCreation: true,
+      });
+      toast.success("Added to cart & shared to gallery! 🎨");
+    } else {
+      toast.success("Custom sticker added to cart!");
+    }
+
+    setShowPreviewModal(false);
+    setStickerName("");
+    setArtistName("");
+    setShareToGallery(false);
   };
 
   return (
     <div className="min-h-screen">
       <HeroSection />
-      <section id="studio" className="section-light py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Sticker Studio
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Upload your design and customize every detail. See your sticker
-              come to life in real-time.
-            </p>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
-            <div className="space-y-6">
-              <motion.div
-                className={`relative rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden ${
-                  isDragging
-                    ? "border-foreground bg-foreground/5"
-                    : uploadedImage
-                    ? "border-gray-200 bg-white"
-                    : "border-gray-300 hover:border-gray-400 bg-gray-50"
-                }`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileInput}
-                  className="hidden"
-                  id="file-upload"
-                />
 
-                <AnimatePresence mode="wait">
-                  {uploadedImage ? (
-                    <motion.div
-                      key="preview"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      className="relative aspect-square"
-                    >
-                      <StickerPreview
-                        image={uploadedImage}
-                        shape={selectedShape}
-                        material={selectedMaterial}
-                      />
-                      <button
-                        onClick={clearImage}
-                        className="absolute top-4 right-4 p-2 rounded-full bg-black/70 text-white hover:bg-black transition-colors"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.label
-                      key="upload"
-                      htmlFor="file-upload"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="flex flex-col items-center justify-center aspect-square cursor-pointer group"
-                    >
-                      <motion.div
-                        className="p-6 rounded-full bg-white border border-gray-200 mb-6 group-hover:border-gray-400 transition-colors"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Upload className="h-10 w-10 text-gray-400 group-hover:text-foreground transition-colors" />
-                      </motion.div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Drop your artwork here
-                      </h3>
-                      <p className="text-muted-foreground text-sm mb-4">
-                        or click to browse files
-                      </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <ImagePlus className="h-4 w-4" />
-                        <span>PNG, JPG, SVG up to 10MB</span>
-                      </div>
-                    </motion.label>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+      <StickerStudioForm
+        uploadedImage={uploadedImage}
+        isDragging={isDragging}
+        selectedShape={selectedShape}
+        selectedMaterial={selectedMaterial}
+        stickerWidth={stickerWidth}
+        quantity={quantity}
+        onImageUpload={handleFile}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onFileInput={handleFileInput}
+        onClearImage={clearImage}
+        onShapeChange={setSelectedShape}
+        onMaterialChange={setSelectedMaterial}
+        onSizeChange={setStickerWidth}
+        onQuantityChange={setQuantity}
+      />
 
-              <div className="lg:hidden space-y-6">
-                {/* <Slider value={stickerWidth} onChange={setStickerWidth} />
-                <QuantitySelector value={quantity} onChange={setQuantity} /> */}
-              </div>
-            </div>
-          </div>
-        </div>
+      <PricingBar
+        price={price}
+        unitPrice={unitPrice}
+        quantity={quantity}
+        onAddToCart={handleAddToCart}
+      />
+
+      <HowItWorksSection />
+
+      <section id="community-gallery">
+        <CommunityGallery
+          stickers={galleryStore.stickers}
+          userStickerIds={galleryStore.userStickers}
+          activeTab={galleryTab}
+          onTabChange={setGalleryTab}
+          onLike={galleryStore.likeSticker}
+          onDelete={galleryStore.removeSticker}
+        />
       </section>
+
+      <PreviewModal
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        uploadedImage={uploadedImage || ""}
+        selectedShape={selectedShape}
+        selectedMaterial={selectedMaterial}
+        stickerWidth={stickerWidth}
+        quantity={quantity}
+        unitPrice={unitPrice}
+        price={price}
+        stickerName={stickerName}
+        setStickerName={setStickerName}
+        artistName={artistName}
+        setArtistName={setArtistName}
+        shareToGallery={shareToGallery}
+        setShareToGallery={setShareToGallery}
+        onConfirm={confirmAddToCart}
+      />
     </div>
   );
 };

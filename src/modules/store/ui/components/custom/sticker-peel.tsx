@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Upload } from "lucide-react";
+import { Upload, Sparkles } from "lucide-react";
 
-export const StickerPeel = () => {
+export function StickerPeelAnimation() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % 4);
+      setActiveIndex((prev) => (prev + 1) % 4);
     }, 3000);
     return () => clearInterval(interval);
-}, []);
-
-
-  const particles = Array.from({ length: 12 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 3 + 4,
-    delay: Math.random() * 2,
-  }));
+  }, []);
 
   const floatingStickers = [
     {
@@ -53,6 +43,15 @@ export const StickerPeel = () => {
     },
   ];
 
+  const particles = Array.from({ length: 12 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 2,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 3 + 4,
+    delay: Math.random() * 2,
+  }));
+
   return (
     <div className="relative w-full aspect-square max-w-lg mx-auto">
       {particles.map((particle) => (
@@ -79,6 +78,7 @@ export const StickerPeel = () => {
           }}
         />
       ))}
+
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={`sparkle-${i}`}
@@ -102,6 +102,7 @@ export const StickerPeel = () => {
           <Sparkles className="h-4 w-4 text-white/30" />
         </motion.div>
       ))}
+
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         initial={{ opacity: 0 }}
@@ -217,6 +218,7 @@ export const StickerPeel = () => {
           </div>
         </motion.div>
       </motion.div>
+
       {floatingStickers.map((sticker, index) => (
         <motion.div
           key={sticker.shape}
@@ -226,7 +228,6 @@ export const StickerPeel = () => {
             opacity: 1,
             scale: activeIndex === index ? 1.15 : 1,
             y: [0, -12, 0],
-            rotate: activeIndex === index ? [0, 2, -2, 0] : 0,
           }}
           transition={{
             opacity: { duration: 0.5, delay: sticker.delay },
@@ -237,11 +238,6 @@ export const StickerPeel = () => {
               delay: sticker.delay,
               ease: "easeInOut",
             },
-            rotate: {
-              duration: 0.5,
-              repeat: activeIndex === index ? Infinity : 0,
-              repeatDelay: 2,
-            },
           }}
         >
           <motion.div
@@ -250,8 +246,6 @@ export const StickerPeel = () => {
                 ? "rounded-full"
                 : sticker.shape === "hexagon"
                 ? "rounded-2xl rotate-12"
-                : sticker.shape === "rectangle"
-                ? "rounded-xl"
                 : "rounded-xl"
             } bg-white/5 backdrop-blur-sm border ${
               activeIndex === index ? "border-white/50" : "border-white/10"
@@ -265,9 +259,7 @@ export const StickerPeel = () => {
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
             )}
-
             <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent" />
-
             {activeIndex === index && (
               <motion.div
                 className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
@@ -275,7 +267,6 @@ export const StickerPeel = () => {
                 transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 1 }}
               />
             )}
-
             <div
               className="absolute inset-0 opacity-20"
               style={{
@@ -287,7 +278,6 @@ export const StickerPeel = () => {
                   sticker.shape === "circle" ? "12px 12px" : "8px 8px",
               }}
             />
-
             <motion.div
               className={`relative text-center ${
                 sticker.shape === "hexagon" ? "-rotate-12" : ""
@@ -296,14 +286,13 @@ export const StickerPeel = () => {
               transition={{ duration: 0.5 }}
             >
               <div
-                className={`text-[10px] font-bold tracking-widest transition-colors ${
+                className={`text-[10px] font-bold tracking-widest ${
                   activeIndex === index ? "text-white/90" : "text-white/60"
                 }`}
               >
                 {sticker.label}
               </div>
             </motion.div>
-
             {activeIndex === index && (
               <motion.div
                 className="absolute inset-0 border-2 border-white/30"
@@ -313,7 +302,6 @@ export const StickerPeel = () => {
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
             )}
-
             {activeIndex === index && (
               <motion.div
                 className="absolute -top-1 -right-1"
@@ -324,7 +312,6 @@ export const StickerPeel = () => {
               </motion.div>
             )}
           </motion.div>
-
           <motion.svg
             className="absolute top-1/2 left-1/2 w-20 h-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             animate={{ opacity: activeIndex === index ? 0.4 : 0.1 }}
@@ -375,4 +362,4 @@ export const StickerPeel = () => {
       </div>
     </div>
   );
-};
+}

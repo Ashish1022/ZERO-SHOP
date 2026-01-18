@@ -1,19 +1,19 @@
-import { motion } from "framer-motion";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
-import { StickerMaterial, StickerShape } from "../../views/custom-view";
+import type { StickerShape, StickerMaterial } from "@/types";
 
-
-
-export const StickerPreview = ({
-  image,
-  shape,
-  material,
-}: {
+interface StickerPreviewProps {
   image: string;
   shape: StickerShape;
   material: StickerMaterial;
-}) => {
+}
+
+export function StickerPreview({
+  image,
+  shape,
+  material,
+}: StickerPreviewProps) {
   const getShapeStyles = () => {
     switch (shape) {
       case "circle":
@@ -72,6 +72,7 @@ export const StickerPreview = ({
           backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
         }}
       />
+
       <motion.div
         className={`relative overflow-hidden ${getShapeStyles()} w-3/4 max-w-xs shadow-2xl border-4 border-white`}
         initial={{ scale: 0.8, opacity: 0 }}
@@ -98,4 +99,4 @@ export const StickerPreview = ({
       </div>
     </div>
   );
-};
+}

@@ -209,12 +209,13 @@
   }
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-  /* For Chrome, Safari, and Edge */
-}
-
-.scrollbar-hide {
-  scrollbar-width: none;
-  /* For Firefox */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
