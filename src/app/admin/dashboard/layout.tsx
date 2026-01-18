@@ -8,8 +8,8 @@ import { AppSidebar } from "@/modules/dashboard/ui/sidebar/app-sidebar";
 import { SitebarHeader } from "@/modules/dashboard/ui/sidebar/sidebar-header";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-  // const { isAuthenticated } = await caller.auth.session();
-  // if (!isAuthenticated) redirect("/");
+  const { isAuthenticated } = await caller.auth.session();
+  if (!isAuthenticated) redirect("/");
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
       <Navbar />

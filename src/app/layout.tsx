@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
-import "./globals.css";
-import { TRPCReactProvider } from "@/trpc/client";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "react-hot-toast";
+import { Space_Grotesk } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+import "./globals.css";
+
+import { TRPCReactProvider } from "@/trpc/client";
+import { Analytics } from '@vercel/analytics/react'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -76,6 +79,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             {children}
             <Toaster />
+            <Analytics />
           </TRPCReactProvider>
         </NuqsAdapter>
       </body>
