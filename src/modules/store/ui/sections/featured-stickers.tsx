@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const FeaturedStickers = () => {
   const router = useRouter();
@@ -68,7 +69,7 @@ export const FeaturedStickers = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {products.map((product) => (
             <Card
               key={product.id}
@@ -122,7 +123,7 @@ export const FeaturedStickers = () => {
                     </span>
                     {product.compareAtPrice &&
                       Number(product.compareAtPrice) >
-                        Number(product.price) && (
+                      Number(product.price) && (
                         <>
                           <span className="text-sm text-muted-foreground line-through">
                             ₹{Number(product.compareAtPrice).toFixed(2)}
@@ -132,7 +133,7 @@ export const FeaturedStickers = () => {
                               ((Number(product.compareAtPrice) -
                                 Number(product.price)) /
                                 Number(product.compareAtPrice)) *
-                                100
+                              100
                             )}
                             % OFF
                           </Badge>
@@ -152,6 +153,67 @@ export const FeaturedStickers = () => {
             </Card>
           ))}
         </div>
+      </div>
+    </section>
+  );
+};
+
+export const FeaturedStickersSkeleton = () => {
+  return (
+    <section className="container mx-auto px-4 py-12">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            Featured
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
+            Best Sellers
+          </h2>
+        </div>
+        <Button variant="outline" size="lg" asChild>
+          <Link href={"/products"}>View All Stickers</Link>
+        </Button>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Card key={index} className="overflow-hidden transition-shadow hover:shadow-lg">
+            <CardContent className="p-0">
+              <div className="relative">
+                <Skeleton className="aspect-square w-full" />
+
+                {index % 3 === 0 && (
+                  <div className="absolute right-2 top-2">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3 p-4">
+                <Skeleton className="h-4 w-20" />
+
+                <Skeleton className="h-6 w-full" />
+
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-6 w-20" />
+                  {index % 2 === 0 && (
+                    <>
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-14" />
+                    </>
+                  )}
+                </div>
+
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </section>
   );

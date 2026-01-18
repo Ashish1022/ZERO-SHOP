@@ -7,6 +7,8 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/modules/dashboard/ui/sidebar/app-sidebar";
 import { SitebarHeader } from "@/modules/dashboard/ui/sidebar/sidebar-header";
 
+export const dynamic = 'force-dynamic';
+
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = await caller.auth.session();
   if (!isAuthenticated) redirect("/");
