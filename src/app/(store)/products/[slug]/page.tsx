@@ -13,26 +13,73 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const queryClient = getQueryClient();
 
-  const product = await queryClient.fetchQuery(
-    trpc.products.getOne.queryOptions({ slug })
-  );
+  try {
+    const product = await queryClient.fetchQuery(
+      trpc.products.getOne.queryOptions({ slug })
+    );
 
-  return {
-    title: product.seoTitle || `${product.name} | Your Store`,
-    description: product.seoDescription || product.description || undefined,
-    openGraph: {
-      title: product.name,
-      description: product.description || undefined,
-      images: product.images[0]
-        ? [
+    const canonicalUrl = `https://zerostick.shop/products/${slug}`;
+
+    const price = Number(product.price).toFixed(2);
+    const currency = "INR";
+
+    return {
+      title: product.seoTitle || `${product.name} | ZERO | STICK`,
+      description: product.seoDescription || product.description || undefined,
+      openGraph: {
+        type: "website",
+        url: canonicalUrl,
+        title: product.name,
+        description: product.description || undefined,
+        siteName: "ZERO | STICK",
+        images: product.images[0]
+          ? [
             {
               url: product.images[0].url,
+              width: 1200,
+              height: 630,
               alt: product.images[0].alt || product.name,
+              type: "image/jpeg",
             },
           ]
-        : [],
-    },
-  };
+          : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: product.seoTitle || product.name,
+        description: product.seoDescription || product.description || undefined,
+        images: product.images[0]?.url ? [product.images[0].url] : [],
+      },
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+      ...(product.updatedAt && {
+        other: {
+          "article:modified_time": new Date(product.updatedAt).toISOString(),
+        },
+      }),
+    };
+  } catch (error) {
+    return {
+      title: "Product Not Found | Your Store Name",
+      description: "The product you're looking for could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
 }
 
 const ProductPage = async ({ params }: Props) => {
@@ -63,12 +110,51 @@ const ProductPage = async ({ params }: Props) => {
     ),
   ]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.images.map((img) => img.url),
+    brand: {
+      "@type": "Brand",
+      name: "ZERO | STICK",
+    },
+    ...(product.price && {
+      offers: {
+        "@type": "Offer",
+        price: Number(product.price).toFixed(2),
+        priceCurrency: "INR", // FIX: Changed from USD to INR
+        availability: "https://schema.org/InStock",
+        url: `https://zerostick.shop/products/${slug}`,
+        priceValidUntil: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+      },
+    }),
+    ...(product.reviewCount > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.averageRating,
+        reviewCount: product.reviewCount,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    }),
+  };
+
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<ProductViewSkeleton />}>
-        <ProductView slug={slug} />
-      </Suspense>
-    </HydrationBoundary>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HydrationBoundary state={dehydrate(queryClient)} >
+        <Suspense fallback={<ProductViewSkeleton />}>
+          <ProductView slug={slug} />
+        </Suspense>
+      </HydrationBoundary >
+    </>
   );
 };
 

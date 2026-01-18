@@ -142,6 +142,8 @@ export const productsRouter = createTRPCRouter({
                     badge: products.badge,
                     refundPolicy: products.refundPolicy,
                     viewCount: products.viewCount,
+                    averageRating: products.averageRating,
+                    reviewCount: products.reviewCount,
 
                     categoryName: categories.name,
                     categorySlug: categories.slug,
@@ -151,6 +153,8 @@ export const productsRouter = createTRPCRouter({
                     sortOrder: productImages.sortOrder,
                     imageUrl: media.url,
                     imageAlt: media.alt,
+
+                    updatedAt: products.updatedAt
                 })
                 .from(products)
                 .leftJoin(
@@ -196,6 +200,8 @@ export const productsRouter = createTRPCRouter({
                 allowBackorders: firstRow.allowBackorders,
                 shippingCost: firstRow.shippingCost,
                 categoryId: firstRow.categoryId,
+                averageRating: firstRow.averageRating,
+                reviewCount: firstRow.reviewCount,
                 seoTitle: firstRow.seoTitle,
                 seoDescription: firstRow.seoDescription,
                 status: firstRow.status,
@@ -203,6 +209,7 @@ export const productsRouter = createTRPCRouter({
                 badge: firstRow.badge,
                 refundPolicy: firstRow.refundPolicy,
                 viewCount: firstRow.viewCount,
+                updatedAt: firstRow.updatedAt
             };
 
             const category = firstRow.categoryId ? {
