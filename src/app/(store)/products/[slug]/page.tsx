@@ -11,6 +11,12 @@ interface Props {
 
 function getAbsoluteUrl(url: string): string {
   if (url.startsWith('http://') || url.startsWith('https://')) {
+    if (url.includes('cloudinary.com')) {
+      const parts = url.split('/upload/');
+      if (parts.length === 2) {
+        return `${parts[0]}/upload/f_jpg,q_75,fl_progressive/${parts[1]}`;
+      }
+    }
     return url;
   }
   const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
@@ -32,18 +38,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const imageUrl = primaryImage ? getAbsoluteUrl(primaryImage.url) : null;
 
     return {
-      title: product.seoTitle || `${product.name} | ZERO | STICK`,
+      title: product.seoTitle || `${product.name} - Premium Quality Stickers | ZERO | STICK`,
       description: product.seoDescription || product.description || undefined,
       openGraph: {
         type: "website",
         url: canonicalUrl,
-        title: product.name,
+        title: product.seoTitle || `${product.name} - Shop Premium Stickers Online | ZERO | STICK`,
         description: product.description || undefined,
         siteName: "ZERO | STICK",
         images: imageUrl
           ? [
             {
               url: imageUrl,
+              secureUrl: imageUrl,
               width: 1200,
               height: 630,
               alt: primaryImage.alt || product.name,
@@ -54,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         card: "summary_large_image",
-        title: product.seoTitle || product.name,
+        title: product.seoTitle || `${product.name} - Buy Premium Stickers | ZERO | STICK`,
         description: product.seoDescription || product.description || undefined,
         images: imageUrl ? [imageUrl] : [],
       },
