@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+
 import { PageHeader } from "@/modules/store/ui/components/page-header";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Shipping Policy",
+  description:
+    "Find out about ZERO | STICK shipping times, delivery charges, packaging, and how we ship stickers across India.",
+  path: "/shipping-policy",
+});
 
 export default function ShippingPolicyPage() {
   return (

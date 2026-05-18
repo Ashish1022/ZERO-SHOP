@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, Heart, Share2, ShoppingCart } from "lucide-react";
+import { Heart, Share2, ShoppingCart } from "lucide-react";
 
 import { ProductGallery } from "../components/product/gallery";
 import { ProductFeatures } from "../components/product/features";
@@ -16,6 +15,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-cart";
 import toast from "react-hot-toast";
+import { Breadcrumbs, type BreadcrumbItem } from "@/components/seo/breadcrumbs";
 
 export const ProductView = ({ slug }: { slug: string }) => {
   const cart = useCart();
@@ -69,40 +69,57 @@ export const ProductView = ({ slug }: { slug: string }) => {
     }
   };
 
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { name: "Shop", path: "/products" },
+    ...(product.category && product.category.name
+      ? [
+          {
+            name: product.category.name,
+            path: `/products?category=${product.category.slug ?? product.category.name}`,
+          },
+        ]
+      : []),
+    { name: product.name ?? "Product", path: `/products/${product.slug}` },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
+    <article className="min-h-screen bg-background" itemScope itemType="https://schema.org/Product">
       <div className="pt-20">
         <div className="container mx-auto px-4 py-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Shop
-          </Link>
+          <Breadcrumbs items={breadcrumbItems} />
         </div>
 
-        <section className="container mx-auto px-4 pb-20">
+        <section className="container mx-auto px-4 pb-20" aria-labelledby="product-title">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
             <ProductGallery images={product.images} />
             <div className="space-y-6">
               <div>
-                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider" itemProp="category">
                   {product.category?.name}
                 </span>
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
+                <h1
+                  id="product-title"
+                  itemProp="name"
+                  className="text-4xl md:text-5xl font-bold tracking-tight mt-2"
+                >
                   {product.name}
                 </h1>
               </div>
-              <div className="flex items-baseline gap-3">
+              <div className="flex items-baseline gap-3" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                <meta itemProp="priceCurrency" content="INR" />
+                <meta itemProp="price" content={Number(product.price).toFixed(2)} />
+                <meta
+                  itemProp="availability"
+                  content={product.quantity ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"}
+                />
                 <span className="text-3xl font-bold">
-                ₹{Number(product.price).toFixed(2)}
+                  ₹{Number(product.price).toFixed(2)}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   per sticker
                 </span>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed" itemProp="description">
                 {product.description}
               </p>
               <div className="flex gap-6 py-4 border-y border-border">
@@ -183,6 +200,6 @@ export const ProductView = ({ slug }: { slug: string }) => {
           categoryId={product.categoryId}
         />
       </div>
-    </div>
+    </article>
   );
 };

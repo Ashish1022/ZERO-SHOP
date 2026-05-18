@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+
 import { PageHeader } from "@/modules/store/ui/components/page-header";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Cancellations and Refunds",
+  description:
+    "Learn about ZERO | STICK's cancellation and refund policy, including timeframes, eligibility, and the steps for returning your stickers.",
+  path: "/cancellations-and-refunds",
+});
 
 export default function CancellationsPage() {
   return (

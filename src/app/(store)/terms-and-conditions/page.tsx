@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+
 import { PageHeader } from "@/modules/store/ui/components/page-header";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Terms and Conditions",
+  description:
+    "Read the ZERO | STICK terms and conditions that govern your use of our store and purchase of stickers.",
+  path: "/terms-and-conditions",
+});
 
 export default function TermsPage() {
   return (

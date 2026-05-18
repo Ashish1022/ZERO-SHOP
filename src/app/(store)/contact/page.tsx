@@ -1,13 +1,53 @@
+import type { Metadata } from "next";
+
 import { PageHeader } from "@/modules/store/ui/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { buildMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_CONFIG } from "@/constants/site";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Contact Us – Get in Touch with ZERO | STICK",
+  description:
+    "Have questions about our stickers, shipping, or custom orders? Reach out to the ZERO | STICK team by email, phone, or visit us in Bangalore.",
+  path: "/contact",
+});
+
+const breadcrumbs = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Contact", path: "/contact" },
+]);
+
+const contactPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact ZERO | STICK",
+  url: `${SITE_CONFIG.url}/contact`,
+  mainEntity: {
+    "@type": "Organization",
+    name: SITE_CONFIG.name,
+    email: SITE_CONFIG.contact.email,
+    telephone: SITE_CONFIG.contact.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: SITE_CONFIG.contact.streetAddress,
+      addressLocality: SITE_CONFIG.contact.addressLocality,
+      addressRegion: SITE_CONFIG.contact.addressRegion,
+      postalCode: SITE_CONFIG.contact.postalCode,
+      addressCountry: SITE_CONFIG.country,
+    },
+  },
+};
 
 export default function ContactPage() {
   return (
     <>
+      <JsonLd id="contact-breadcrumbs" data={breadcrumbs} />
+      <JsonLd id="contact-page" data={contactPageJsonLd} />
       <PageHeader 
         title="Contact Us" 
         description="Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible."

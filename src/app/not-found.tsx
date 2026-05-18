@@ -1,25 +1,52 @@
-"use client";
-
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description: "The page you are looking for does not exist or has been moved.",
+  robots: {
+    index: false,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: true,
+      noimageindex: true,
+    },
+  },
+};
+
 export default function NotFound() {
-  const pathname = usePathname();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", pathname);
-  }, [pathname]);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <Link href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </Link>
+    <main
+      id="main-content"
+      className="flex min-h-screen items-center justify-center bg-muted px-4"
+    >
+      <div className="text-center max-w-md">
+        <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+          Error 404
+        </p>
+        <h1 className="mt-2 mb-4 text-4xl md:text-5xl font-bold tracking-tight">
+          Page not found
+        </h1>
+        <p className="mb-8 text-muted-foreground">
+          The page you are looking for may have been removed or is temporarily unavailable.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-md bg-foreground text-background px-6 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            Return Home
+          </Link>
+          <Link
+            href="/products"
+            className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            Shop Stickers
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

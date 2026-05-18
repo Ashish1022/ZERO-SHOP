@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+
 import { PageHeader } from "@/modules/store/ui/components/page-header";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Privacy Policy",
+  description:
+    "Read the ZERO | STICK privacy policy to learn how we collect, use, and protect your personal information.",
+  path: "/privacy-policy",
+});
 
 export default function PrivacyPolicyPage() {
   return (

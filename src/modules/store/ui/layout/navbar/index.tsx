@@ -23,17 +23,24 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <header
+        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
+        role="banner"
+      >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             <Link
               href="/"
               className="text-xl md:text-2xl font-bold tracking-tighter"
+              aria-label="ZERO | STICK - Home"
             >
-              ZERO | STICK<span className="text-muted-foreground">.</span>
+              ZERO | STICK<span className="text-muted-foreground" aria-hidden="true">.</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-8">
+            <nav
+              className="hidden md:flex items-center gap-8"
+              aria-label="Primary"
+            >
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -51,9 +58,13 @@ export const Navbar = () => {
                 size="icon"
                 className="relative"
                 onClick={() => setIsCartOpen(true)}
+                aria-label={`Open shopping cart, ${cart.totalQuantity} item${cart.totalQuantity === 1 ? "" : "s"}`}
               >
-                <ShoppingBag className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-foreground text-background text-xs flex items-center justify-center">
+                <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+                <span
+                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-foreground text-background text-xs flex items-center justify-center"
+                  aria-hidden="true"
+                >
                   {cart.totalQuantity > 9 ? "9+" : cart.totalQuantity}
                 </span>
               </Button>
@@ -69,19 +80,25 @@ export const Navbar = () => {
                 size="icon"
                 className="md:hidden"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-nav"
               >
                 {isMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5" aria-hidden="true" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-5 w-5" aria-hidden="true" />
                 )}
               </Button>
             </div>
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border animate-fade-up">
-              <nav className="flex flex-col gap-4">
+            <div
+              id="mobile-nav"
+              className="md:hidden py-4 border-t border-border animate-fade-up"
+            >
+              <nav className="flex flex-col gap-4" aria-label="Mobile">
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
 
 import { useTRPC } from "@/trpc/client";
@@ -15,8 +14,6 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const FeaturedStickers = () => {
-  const router = useRouter();
-
   const cart = useCart();
 
   const trpc = useTRPC();
@@ -70,38 +67,45 @@ export const FeaturedStickers = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-          {products.map((product) => (
+          {products.map((product, idx) => (
             <Card
               key={product.id}
-              className="group overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-              onClick={() => router.push(`/products/${product.slug}`)}
+              className="group overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="relative aspect-square bg-secondary overflow-hidden">
-                {product.primaryImage ? (
-                  <Image
-                    src={product.primaryImage.url}
-                    alt={product.primaryImage.alt || product.name}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    <div className="text-center">
-                      <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No image</p>
+              <Link
+                href={`/products/${product.slug}`}
+                aria-label={`View ${product.name}`}
+                className="block"
+              >
+                <div className="relative aspect-square bg-secondary overflow-hidden">
+                  {product.primaryImage ? (
+                    <Image
+                      src={product.primaryImage.url}
+                      alt={product.primaryImage.alt || product.name}
+                      fill
+                      loading={idx < 3 ? "eager" : "lazy"}
+                      fetchPriority={idx < 3 ? "high" : "auto"}
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <div className="text-center">
+                        <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-50" aria-hidden="true" />
+                        <p className="text-sm">No image</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {product.badge && (
-                  <Badge
-                    variant="secondary"
-                    className="absolute top-2 left-2 capitalize"
-                  >
-                    {product.badge}
-                  </Badge>
-                )}
-              </div>
+                  )}
+                  {product.badge && (
+                    <Badge
+                      variant="secondary"
+                      className="absolute top-2 left-2 capitalize"
+                    >
+                      {product.badge}
+                    </Badge>
+                  )}
+                </div>
+              </Link>
               <CardContent className="p-4">
                 {product.category && (
                   <p className="text-xs text-primary font-medium mb-1 uppercase tracking-wide">
@@ -109,7 +113,12 @@ export const FeaturedStickers = () => {
                   </p>
                 )}
                 <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                  {product.name}
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="hover:underline focus:outline-none focus-visible:underline"
+                  >
+                    {product.name}
+                  </Link>
                 </h3>
                 {product.shortDescription && (
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-2">

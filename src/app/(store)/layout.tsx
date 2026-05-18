@@ -3,9 +3,11 @@ import { Footer } from "@/modules/store/ui/layout/footer";
 
 const StoreLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className={`min-h-screen`}>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main>{children}</main>
+      <main id="main-content" className="flex-1">
+        {children}
+      </main>
       <Footer />
     </div>
   );

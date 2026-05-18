@@ -9,14 +9,19 @@ import { useRouter } from "next/navigation";
 export const HeroSection = () => {
   const router = useRouter();
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface-dark text-surface-dark-foreground">
-      <div className="absolute inset-0">
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-surface-dark text-surface-dark-foreground"
+      aria-labelledby="hero-heading"
+    >
+      <div className="absolute inset-0" aria-hidden="true">
         <Image
           src="/hero-stickers.jpg"
-          alt="Premium sticker collection"
+          alt=""
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
+          quality={75}
           className="object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-linear-to-t from-surface-dark via-surface-dark/60 to-transparent" />
@@ -38,6 +43,7 @@ export const HeroSection = () => {
           </div>
 
           <h1
+            id="hero-heading"
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tighter mb-6 animate-fade-up"
             style={{ animationDelay: "0.2s" }}
           >
